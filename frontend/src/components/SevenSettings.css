@@ -131,12 +131,13 @@
 .seven-brain-map-page .seven-graph-wrap{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;touch-action:none;cursor:grab}
 .seven-brain-map-page .seven-graph-wrap:active{cursor:grabbing}
 .seven-brain-map-page .seven-graph{display:block;width:100%;height:100%;min-width:0;max-height:none;overflow:hidden;touch-action:none;user-select:none}
-.seven-brain-map-page .seven-graph-line{fill:none;stroke:#c4888d;stroke-width:.85;stroke-opacity:.26;transition:stroke-opacity .18s,stroke-width .18s}
+.seven-brain-map-page .seven-graph-line{fill:none;stroke:#c4888d;stroke-width:1.1;stroke-opacity:.4;stroke-dasharray:none;stroke-linecap:round;transition:stroke-opacity .18s,stroke-width .18s}
+.seven-brain-map-page .seven-graph-line-dense{stroke-width:.8;stroke-opacity:.15}
 .seven-brain-map-page .seven-graph-line-active{stroke:#ff7a80;stroke-width:1.5;stroke-opacity:.92}
-.seven-brain-map-page .seven-graph-focus-layer{transition:transform .55s cubic-bezier(.2,.7,.2,1)}
-.seven-brain-map-page .seven-graph-node{cursor:pointer;outline:0;transition:opacity .2s,transform .25s ease;transform-box:fill-box;transform-origin:center}.seven-brain-map-page .seven-graph-node-muted{opacity:.14}.seven-brain-map-page .seven-graph-node-connected{transform:scale(1.38)}.seven-brain-map-page .seven-graph-node-active{transform:scale(1.62)}
-.seven-brain-map-page .seven-brain-data-dot{stroke:rgba(255,242,243,.38);stroke-width:.75;filter:drop-shadow(0 0 4px rgba(211,81,90,.2));transition:r .18s,filter .18s,stroke .18s}
-.seven-brain-map-page .seven-graph-node:hover .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node-active .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node:focus-visible .seven-brain-data-dot{filter:drop-shadow(0 0 10px currentColor);stroke:#fff;stroke-width:1.8}
+.seven-brain-map-page .seven-graph-focus-layer{transition:none}
+.seven-brain-map-page .seven-graph-node{cursor:pointer;outline:0;transition:opacity .2s}.seven-brain-map-page .seven-graph-node-muted{opacity:.14}
+.seven-brain-map-page .seven-brain-data-dot{stroke:rgba(255,242,243,.38);stroke-width:.75;filter:drop-shadow(0 0 4px rgba(211,81,90,.2));transition:filter .18s,stroke .18s}
+.seven-brain-map-page .seven-graph-node-active .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node:focus-visible .seven-brain-data-dot{filter:drop-shadow(0 0 10px currentColor);stroke:#fff;stroke-width:1.8}
 .seven-brain-map-page .seven-graph-node:focus-visible{outline:none}.seven-brain-map-page .seven-graph-node:focus-visible circle:first-child{stroke:rgba(255,255,255,.6);stroke-width:1.4}
 .seven-brain-map-page .seven-graph-title{fill:#fff;paint-order:stroke;stroke:#292f35;stroke-width:4px;font-size:15px;font-weight:650}
 .seven-brain-map-back{position:absolute;top:20px;left:20px;z-index:5;width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(236,243,245,.16);border-radius:10px;background:rgba(37,44,50,.82);color:#e7eff0;text-decoration:none;backdrop-filter:blur(10px);box-shadow:0 5px 20px #14191c35}.seven-brain-map-back:hover{background:#343e44}
@@ -149,11 +150,14 @@
 
 /* Seven's charcoal and red palette for the 3D knowledge graph. */
 .seven-brain-map-page{--seven-red:#ed4248;--seven-red-soft:#ff7a80;background:#08090b;color:#f4f0f0;background-image:radial-gradient(ellipse at 50% 48%,rgba(129,15,25,.19),transparent 52%),radial-gradient(circle,rgba(233,190,194,.075) 1px,transparent 1.2px);background-size:auto,28px 28px}
-.seven-brain-map-page .seven-graph-line{stroke:#c9858b;stroke-opacity:.26}
+.seven-brain-map-page .seven-graph-line{stroke:#c9858b;stroke-opacity:.4;stroke-dasharray:none}
+.seven-brain-map-page .seven-graph-line-dense{stroke-width:.8;stroke-opacity:.15}
 .seven-brain-map-page .seven-graph-line-active{stroke:var(--seven-red-soft);stroke-width:1.5;stroke-opacity:.96}
+.seven-brain-map-page .seven-graph-autospin{transform-box:view-box;transform-origin:50% 50%;animation:seven-brain-map-spin var(--seven-graph-spin-duration,840s) linear infinite;will-change:transform}
+.seven-brain-map-page .seven-graph-autospin.is-paused{animation-play-state:paused}
+@keyframes seven-brain-map-spin{to{transform:rotate(360deg)}}
 .seven-brain-map-page .seven-brain-data-dot{stroke:rgba(255,242,243,.38);filter:drop-shadow(0 0 4px rgba(211,81,90,.2))}
-.seven-brain-map-page .seven-graph-node-connected .seven-brain-data-dot{filter:drop-shadow(0 0 8px rgba(237,66,72,.7));stroke:rgba(255,242,243,.75)}
-.seven-brain-map-page .seven-graph-node:hover .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node-active .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node:focus-visible .seven-brain-data-dot{filter:drop-shadow(0 0 10px rgba(237,66,72,.65))}
+.seven-brain-map-page .seven-graph-node-active .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node:focus-visible .seven-brain-data-dot{filter:drop-shadow(0 0 10px rgba(237,66,72,.65))}
 .seven-brain-map-page .seven-graph-title{stroke:#110b0d}
 .seven-brain-map-page .seven-brain-map-back{border-color:rgba(237,66,72,.28);background:rgba(24,14,17,.88);color:#f4dadd;box-shadow:0 5px 20px #08090b55}
 .seven-brain-map-page .seven-brain-map-back:hover{background:#3c171e}

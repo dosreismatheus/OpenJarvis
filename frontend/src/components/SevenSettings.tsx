@@ -8,9 +8,16 @@ const field: React.CSSProperties = { background: 'var(--color-bg)', color: 'var(
 const initialRotation = { yaw: -.28, pitch: .18 };
 
 function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: SevenNote) => void }) {
+  const shouldAutoRotate = notes.length <= 500;
+  const rotationPeriodSeconds = 300 + notes.length * .54;
+  const rotationRadiansPerMs = (Math.PI * 2) / (rotationPeriodSeconds * 1000);
   const [activeId, setActiveId] = useState<string | null>(null);
   const activeIdRef = useRef<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const hoveredIdRef = useRef<string | null>(null);
+  const [pointerInsideGraph, setPointerInsideGraph] = useState(false);
+  const pointerInsideGraphRef = useRef(false);
+  const autoFitApplied = useRef(false);
   const [zoom, setZoom] = useState(1.15);
   const [entryProgress, setEntryProgress] = useState(0);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -18,17 +25,13 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
   const drag = useRef<{ mode: 'rotate' | 'pan'; x: number; y: number; yaw: number; pitch: number; panX: number; panY: number } | null>(null);
   const motionTime = useRef(0);
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setEntryProgress(1);
-      return;
-    }
     let frame = 0;
     let previous = 0;
     let startedAt = 0;
     let lastEntryUpdate = 0;
     const animate = (time: number) => {
       if (!startedAt) startedAt = time;
-      const entryTime = Math.min(1, (time - startedAt) / 1650);
+      const entryTime = Math.min(1, (time - startedAt) / 2200);
       if (entryTime < 1 && (!lastEntryUpdate || time - lastEntryUpdate >= 32)) {
         const easedEntry = 1 - Math.pow(1 - entryTime, 3);
         setEntryProgress(easedEntry);
@@ -37,12 +40,14 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
         setEntryProgress(1);
         lastEntryUpdate = 0;
       }
-      if (previous && !drag.current && !activeIdRef.current) {
+      if (previous && shouldAutoRotate && !drag.current && !activeIdRef.current && !hoveredIdRef.current && !pointerInsideGraphRef.current) {
         motionTime.current += time - previous;
         if (motionTime.current >= 32) {
           const elapsed = motionTime.current;
           motionTime.current = 0;
-          setRotation((current) => ({ ...current, yaw: current.yaw + elapsed * .000025 }));
+          setRotation((current) => hoveredIdRef.current || activeIdRef.current || drag.current || pointerInsideGraphRef.current
+            ? current
+            : { ...current, yaw: current.yaw + elapsed * rotationRadiansPerMs });
         }
       }
       previous = time;
@@ -50,7 +55,7 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [rotationRadiansPerMs, shouldAutoRotate]);
   const positions = useMemo(() => {
     const sorted = [...notes].sort((a, b) => a.area.localeCompare(b.area) || b.links.length - a.links.length || a.title.localeCompare(b.title, 'pt-BR'));
     const golden = Math.PI * (3 - Math.sqrt(5));
@@ -58,7 +63,7 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
     for (const note of sorted) areaGroups.set(note.area, [...(areaGroups.get(note.area) || []), note]);
     const areas = [...areaGroups.keys()];
     const areaIndexes = new Map(areas.map((area) => [area, new Map((areaGroups.get(area) || []).map((note, index) => [note.id, index]))]));
-    const clusterRadius = sorted.length > 600 ? 325 : 270;
+    const clusterRadius = sorted.length > 600 ? 520 : 270;
     const centers = new Map(areas.map((area, index) => {
       const fraction = (index + .5) / areas.length;
       const vertical = 1 - 2 * fraction;
@@ -71,7 +76,7 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
       const index = areaIndexes.get(note.area)?.get(note.id) || 0;
       const center = centers.get(note.area) || { x: 0, y: 0, z: 0 };
       const fraction = (index + .5) / group.length;
-      const localRadius = 30 + Math.min(90, Math.sqrt(group.length) * 12);
+      const localRadius = 30 + Math.min(180, Math.sqrt(group.length) * 18);
       const vertical = 1 - 2 * fraction;
       const around = Math.sqrt(1 - vertical * vertical);
       const angle = index * golden + (areas.indexOf(note.area) * .71);
@@ -92,6 +97,26 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
       return { ...point, x: 600 + rotatedX * perspective, y: 400 + rotatedY * perspective, depth, perspective };
     }).sort((a, b) => a.depth - b.depth);
   }, [notes, rotation]);
+  const fitView = useMemo(() => {
+    if (!positions.length) return { zoom: 1.15, pan: { x: 0, y: 0 } };
+    const minX = Math.min(...positions.map(({ x }) => x));
+    const maxX = Math.max(...positions.map(({ x }) => x));
+    const minY = Math.min(...positions.map(({ y }) => y));
+    const maxY = Math.max(...positions.map(({ y }) => y));
+    const width = maxX - minX + 48;
+    const height = maxY - minY + 48;
+    const shapeFitZoom = Math.min(4, Math.max(.35, Math.min(1040 / width, 600 / height) * 1.5));
+    return {
+      zoom: shapeFitZoom * .8,
+      pan: { x: 600 - (minX + maxX) / 2, y: 400 - (minY + maxY) / 2 },
+    };
+  }, [positions]);
+  useEffect(() => {
+    if (!notes.length || autoFitApplied.current) return;
+    autoFitApplied.current = true;
+    setZoom(fitView.zoom);
+    setPan(fitView.pan);
+  }, [fitView, notes.length]);
   const byId = new Map(positions.map((position) => [position.note.id, position]));
   const seenLinks = new Set<string>();
   const links = positions.flatMap((source) => source.note.links.map((id) => {
@@ -107,19 +132,17 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
     .flatMap(({ source, target }) => [source.note.id, target.note.id]));
   const related = detailNote ? notes.filter((note) => note.id !== detailNote.id && (detailNote.links.includes(note.id) || note.links.includes(detailNote.id))) : [];
 
-  const entryScale = .22 + .78 * entryProgress;
+  const entryScale = .72 + .28 * entryProgress;
   const transform = `translate(${pan.x} ${pan.y}) translate(600 400) scale(${zoom * entryScale}) translate(-600 -400)`;
-  const activePoint = activeId ? byId.get(activeId) : null;
-  const focusTransform = activePoint ? `translate(600 400) scale(1.48) translate(${-activePoint.x} ${-activePoint.y})` : undefined;
-  const changeZoom = (amount: number) => setZoom((value) => Math.min(4, Math.max(.35, value + amount)));
+  const changeZoom = (amount: number) => setZoom((value) => Math.min(12, Math.max(.28, value + amount)));
   const selectNote = (id: string | null) => { activeIdRef.current = id; setActiveId(id); };
-  const resetView = () => { setZoom(1.15); setPan({ x: 0, y: 0 }); setRotation(initialRotation); selectNote(null); };
+  const resetView = () => { setZoom(fitView.zoom); setPan(fitView.pan); setRotation(initialRotation); selectNote(null); };
   const zoomAtCursor = (event: React.WheelEvent<SVGSVGElement>) => {
     event.preventDefault();
     const bounds = event.currentTarget.getBoundingClientRect();
     const pointX = (event.clientX - bounds.left) * 1200 / bounds.width;
     const pointY = (event.clientY - bounds.top) * 800 / bounds.height;
-    const nextZoom = Math.min(4, Math.max(.35, zoom + (event.deltaY < 0 ? .12 : -.12)));
+    const nextZoom = Math.min(12, Math.max(.28, zoom + (event.deltaY < 0 ? .12 : -.12)));
     const difference = zoom - nextZoom;
     setPan((currentPan) => ({ x: currentPan.x + difference * (pointX - 600), y: currentPan.y + difference * (pointY - 400) }));
     setZoom(nextZoom);
@@ -154,18 +177,19 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
       <div><button type="button" onClick={() => changeZoom(-.2)} aria-label="Diminuir zoom" title="Diminuir zoom"><Minus size={16} /></button><button type="button" onClick={resetView} aria-label="Redefinir mapa" title="Redefinir mapa"><RotateCcw size={15} /></button><span className="seven-graph-zoom-level" aria-live="polite">{Math.round(zoom * 100)}%</span><button type="button" onClick={() => changeZoom(.2)} aria-label="Aumentar zoom" title="Aumentar zoom"><Plus size={16} /></button></div>
     </div>
     <div className="seven-graph-wrap">
-      <svg viewBox="0 0 1200 800" role="group" aria-label="Mapa 3D conectado das notas pessoais" className="seven-graph" onWheel={zoomAtCursor} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => { drag.current = null; }}>
+      <svg viewBox="0 0 1200 800" role="group" aria-label="Mapa 3D conectado das notas pessoais" className="seven-graph" onWheel={zoomAtCursor} onPointerEnter={() => { pointerInsideGraphRef.current = true; setPointerInsideGraph(true); }} onPointerLeave={() => { pointerInsideGraphRef.current = false; setPointerInsideGraph(false); }} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => { drag.current = null; }}>
         <g transform={transform} opacity={entryProgress}>
-        <g className="seven-graph-focus-layer" transform={focusTransform}>
-          {links.map(({ source, target }) => <path key={`${source.note.id}-${target.note.id}`} d={`M ${source.x} ${source.y} L ${target.x} ${target.y}`} className={`seven-graph-line ${source.note.id === focused?.id || target.note.id === focused?.id ? 'seven-graph-line-active' : ''}`} />)}
+        <g className={`seven-graph-focus-layer ${shouldAutoRotate ? '' : 'seven-graph-autospin'} ${activeId || hoveredId || pointerInsideGraph ? 'is-paused' : ''}`} style={{ '--seven-graph-spin-duration': `${rotationPeriodSeconds}s` } as React.CSSProperties}>
+          {links.map(({ source, target }) => <path key={`${source.note.id}-${target.note.id}`} d={`M ${source.x} ${source.y} L ${target.x} ${target.y}`} className={`seven-graph-line ${notes.length > 500 ? 'seven-graph-line-dense' : ''} ${source.note.id === focused?.id || target.note.id === focused?.id ? 'seven-graph-line-active' : ''}`} />)}
           {positions.map(({ note, x, y, depth, perspective }) => {
           const color = SEVEN_AREAS[note.area]?.color || '#9ca3af';
-          const selected = note.id === focused?.id;
+          const selected = note.id === activeId;
+          const showTitle = note.id === hoveredId || selected;
           const relatedNode = focused && !selected && connected.has(note.id);
-          return <g key={note.id} role="button" tabIndex={0} aria-label={`Explorar nota ${note.title}`} aria-pressed={note.id === activeId} onMouseEnter={() => setHoveredId(note.id)} onMouseLeave={() => setHoveredId(null)} onFocus={() => setHoveredId(note.id)} onBlur={() => setHoveredId(null)} onClick={() => selectNote(note.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); selectNote(note.id); } }} className={`seven-graph-node ${selected ? 'seven-graph-node-active' : ''} ${relatedNode ? 'seven-graph-node-connected' : ''} ${focused && !selected && !relatedNode ? 'seven-graph-node-muted' : ''}`}>
+          return <g key={note.id} role="button" tabIndex={0} aria-label={`Explorar nota ${note.title}`} aria-pressed={note.id === activeId} onMouseEnter={() => { pointerInsideGraphRef.current = true; setPointerInsideGraph(true); hoveredIdRef.current = note.id; setHoveredId(note.id); }} onMouseLeave={() => { hoveredIdRef.current = null; setHoveredId(null); }} onFocus={() => { hoveredIdRef.current = note.id; setHoveredId(note.id); }} onBlur={() => { hoveredIdRef.current = null; setHoveredId(null); }} onClick={() => selectNote(note.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); selectNote(note.id); } }} className={`seven-graph-node ${selected ? 'seven-graph-node-active' : ''} ${relatedNode ? 'seven-graph-node-connected' : ''} ${focused && !selected && !relatedNode ? 'seven-graph-node-muted' : ''}`}>
             <circle cx={x} cy={y} r="17" fill="transparent" />
-            <circle cx={x} cy={y} r={Math.min(6.5, (1.7 + Math.sqrt(note.links.length) * .62) * perspective)} fill={color} className="seven-brain-data-dot" style={{ opacity: Math.max(.34, Math.min(.94, .62 + depth / 1100)) }} />
-            {selected && <text x={x + 16} y={y - 15} className="seven-graph-title">{note.title}</text>}
+            <circle cx={x} cy={y} r={Math.min(10, (3 + Math.sqrt(note.links.length) * .82) * perspective)} fill={color} className="seven-brain-data-dot" style={{ opacity: Math.max(.34, Math.min(.94, .62 + depth / 1100)) }} />
+            {showTitle && <text x={x} y={y - 22} textAnchor="middle" className="seven-graph-title">{note.title}</text>}
           </g>;
           })}
         </g>

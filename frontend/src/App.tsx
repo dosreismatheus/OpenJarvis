@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import { ChatPage } from './pages/ChatPage';
 import { SevenPage } from './pages/SevenPage';
 import { SevenSettings } from './components/SevenSettings';
+import { SevenAgentSettings } from './components/SevenAgentSettings';
 import { SecondBrainPage } from './pages/SecondBrainPage';
 import { SquadsPage } from './pages/SquadsPage';
 import { SquadBrainMapPage } from './pages/SquadBrainMapPage';
@@ -188,12 +189,12 @@ export default function App() {
       <UpdateChecker />
       <Routes>
         <Route index element={<SevenPage />} />
-        <Route path="seven/settings" element={<div className="min-h-screen p-6" style={{ background: 'var(--color-bg)' }}><div className="max-w-2xl mx-auto"><SevenSettings /></div></div>} />
         <Route path="brain" element={<SecondBrainPage />} />
         <Route path="brain/notes" element={<SecondBrainPage view="notes" />} />
         <Route path="squads" element={<SquadsPage />} />
         <Route path="squads/:squadId" element={<SquadsPage />} />
         <Route path="squads/:squadId/brain" element={<SquadBrainMapPage />} />
+        <Route path="seven/settings" element={<div className="min-h-screen p-6" style={{ background: 'var(--color-bg)' }}><div className="max-w-2xl mx-auto space-y-6"><SevenSettings /><SevenAgentSettings /></div></div>} />
         <Route element={<Layout />}>
           <Route path="chat" element={<ChatPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
