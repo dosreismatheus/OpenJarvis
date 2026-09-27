@@ -72,7 +72,7 @@
   opacity: 0;
   transition: opacity .3s ease;
 }
-.seven-orb-stage-speaking .seven-orb-voice { opacity: .28; }
+.seven-orb-stage-speaking .seven-orb-voice { opacity: .12; }
 .seven-orb-art {
   position: absolute;
   inset: 0;
