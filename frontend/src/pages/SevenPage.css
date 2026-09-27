@@ -61,6 +61,19 @@
 }
 .seven-orb::before, .seven-orb::after { display: none; }
 .seven-orb-filter { position: absolute; width: 0; height: 0; overflow: hidden; }
+.seven-orb-brain {
+  position: absolute;
+  inset: -15%;
+  width: 130%;
+  height: 130%;
+  z-index: -2;
+  pointer-events: none;
+  overflow: visible;
+  -webkit-mask-image: radial-gradient(circle, #000 0 72%, transparent 91%);
+  mask-image: radial-gradient(circle, #000 0 72%, transparent 91%);
+}
+.seven-orb-brain-link { stroke: rgba(242, 113, 121, .32); stroke-width: .9; }
+.seven-orb-brain-node { filter: drop-shadow(0 0 4px rgba(255, 123, 132, .55)); }
 .seven-orb-voice {
   position: absolute;
   inset: -20%;

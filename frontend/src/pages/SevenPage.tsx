@@ -10,6 +10,7 @@ import {
 } from '../lib/seven';
 import './SevenPage.css';
 import { useSevenOrbMotion } from './useSevenOrbMotion';
+import { SevenBrainBackdrop } from './SevenBrainBackdrop';
 
 type ChatItem = { id: string; role: 'user' | 'assistant'; text: string };
 const CHAT_KEY = 'seven-chat-v1';
@@ -361,6 +362,7 @@ export function SevenPage() {
       <section className="seven-conversation" aria-label="Conversa com Seven">
         <div className="seven-intro">
           <div className={`seven-orb-stage seven-orb-stage-${status}`}>
+            <SevenBrainBackdrop notes={profile?.notes ?? []} />
             <canvas ref={voiceCanvasRef} className="seven-orb-voice" aria-hidden="true" />
             <div ref={orbRef} className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
               <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
