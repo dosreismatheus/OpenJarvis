@@ -278,12 +278,24 @@ export function SevenPage() {
       <section className="seven-conversation" aria-label="Conversa com Seven">
         <div className="seven-intro">
           <div className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
-            <div className="seven-orb-ticks" aria-hidden="true" />
-            <div className="seven-orb-ring seven-orb-ring-one" />
-            <div className="seven-orb-ring seven-orb-ring-two" />
-            <div className="seven-orb-ring seven-orb-ring-three" />
-            <div className="seven-orb-particles" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /></div>
-            <div className="seven-orb-inner" />
+            <span className="seven-orb-art seven-orb-red-structure" aria-hidden="true" />
+            <span className="seven-orb-pieces" aria-hidden="true">
+              <span className="seven-orb-art seven-orb-piece" />
+              <span className="seven-orb-art seven-orb-piece" />
+              <span className="seven-orb-art seven-orb-piece" />
+              <span className="seven-orb-art seven-orb-piece" />
+              <span className="seven-orb-art seven-orb-piece" />
+              <span className="seven-orb-art seven-orb-piece" />
+            </span>
+            <span className="seven-orb-art seven-orb-red-edge" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-yellow-solid" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-yellow-bars" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-yellow-line" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-green seven-orb-green-bright" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-green seven-orb-green-fine" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-green seven-orb-green-circuit" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-green seven-orb-green-outer" aria-hidden="true" />
+            <span className="seven-orb-color" aria-hidden="true" />
           </div>
           <p className="seven-eyebrow">SEVEN · ASSISTENTE DA 7BUILD</p>
           <h1>{messages.length ? stateLabel : <>À disposição, <em>{profile?.address || 'senhor'}.</em></>}</h1>
