@@ -45,139 +45,21 @@
   isolation: isolate;
   border: 0;
   border-radius: 50%;
-  background: #10090c;
-  box-shadow: 0 0 54px rgba(232, 37, 58, .12);
-  -webkit-mask-image: radial-gradient(circle closest-side, #000 0 90%, transparent 100%);
-  mask-image: radial-gradient(circle closest-side, #000 0 90%, transparent 100%);
+  background: transparent;
+  box-shadow: none;
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 0 84%, transparent 87%);
+  mask-image: radial-gradient(circle closest-side, #000 0 84%, transparent 87%);
   animation: none;
 }
 .seven-orb::before, .seven-orb::after { display: none; }
+.seven-orb-filter { position: absolute; width: 0; height: 0; overflow: hidden; }
 .seven-orb-art {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background: url('/seven/orb-clean.png') center / auto 100% no-repeat;
-  filter: grayscale(1) contrast(1.16) brightness(1.17);
-  will-change: transform, opacity;
-}
-/* The rings use the same pixels, but their motion is independent. */
-/* The outer structure and bright edge move independently. */
-.seven-orb-red-structure {
-  opacity: 1;
-  filter: grayscale(1) contrast(1.16) brightness(1.17);
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 73%, #000 76% 82%, transparent 84%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 73%, #000 76% 82%, transparent 84%);
-  animation: sevenOrbOuter 56s linear infinite;
-}
-.seven-orb-red-edge {
-  filter: grayscale(1) contrast(1.16) brightness(1.17);
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 82%, #000 84% 88%, transparent 90%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 82%, #000 84% 88%, transparent 90%);
-  animation: sevenOrbRedEdge 70s linear infinite;
-}
-/* The broad band and radial marks move separately. */
-.seven-orb-yellow-solid {
-  filter: grayscale(1) blur(2.6px) contrast(1.45) brightness(1.14);
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 49%, #000 52% 59%, transparent 61%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 49%, #000 52% 59%, transparent 61%);
-  animation: sevenOrbYellowSolid 54s linear infinite;
-}
-/* Radial marks rotate independently of the broad band. */
-.seven-orb-yellow-bars {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 61%, #000 63% 67%, transparent 69%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 61%, #000 63% 67%, transparent 69%);
-  animation: sevenOrbYellowBars 27s linear infinite;
-}
-.seven-orb-yellow-line {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 68%, #000 70% 73%, transparent 75%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 68%, #000 70% 73%, transparent 75%);
-  animation: sevenOrbYellowLine 42s linear infinite;
-}
-/* The four inner concentric structures keep their independent motion. */
-.seven-orb-green-bright {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 33%, #000 35% 40%, transparent 42%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 33%, #000 35% 40%, transparent 42%);
-  animation: sevenOrbCore 37s linear infinite;
-}
-.seven-orb-green-fine {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 40%, #000 42% 44%, transparent 46%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 40%, #000 42% 44%, transparent 46%);
-  animation: sevenOrbFine 28s linear infinite;
-}
-.seven-orb-green-circuit {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 44%, #000 46% 48%, transparent 50%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 44%, #000 46% 48%, transparent 50%);
-  animation: sevenOrbCircuit 51s linear infinite;
-}
-.seven-orb-green-outer {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 48%, #000 50% 52%, transparent 54%);
-  mask-image: radial-gradient(circle closest-side, transparent 0 48%, #000 50% 52%, transparent 54%);
-  animation: sevenOrbGreenOuter 67s linear infinite;
-}
-/* Six wedges reveal the original outer shapes. Each has its own drift and light cycle. */
-.seven-orb-pieces { position: absolute; inset: 0; }
-.seven-orb-piece {
-  --sector: 0deg;
-  --piece-duration: 48s;
-  --piece-delay: 0s;
-  opacity: .25;
-  -webkit-mask-image:
-    radial-gradient(circle closest-side, transparent 0 74%, #000 77% 81%, transparent 83%),
-    conic-gradient(from var(--sector), transparent 0deg, #000 2deg 56deg, transparent 59deg);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    radial-gradient(circle closest-side, transparent 0 74%, #000 77% 81%, transparent 83%),
-    conic-gradient(from var(--sector), transparent 0deg, #000 2deg 56deg, transparent 59deg);
-  mask-composite: intersect;
-  animation: sevenOrbPiece var(--piece-duration) linear var(--piece-delay) infinite;
-}
-.seven-orb-piece:nth-child(1) { --sector: 0deg; --piece-duration: 48s; --piece-delay: -1.2s; }
-.seven-orb-piece:nth-child(2) { --sector: 60deg; --piece-duration: 54s; --piece-delay: -3.3s; }
-.seven-orb-piece:nth-child(3) { --sector: 120deg; --piece-duration: 45s; --piece-delay: -4.1s; }
-.seven-orb-piece:nth-child(4) { --sector: 180deg; --piece-duration: 53s; --piece-delay: -2.2s; }
-.seven-orb-piece:nth-child(5) { --sector: 240deg; --piece-duration: 50s; --piece-delay: -5.4s; }
-.seven-orb-piece:nth-child(6) { --sector: 300deg; --piece-duration: 60s; --piece-delay: -.8s; }
-/* Restore one red palette across all the independently moving rings. */
-.seven-orb-color {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: #ff354d;
-  mix-blend-mode: color;
-  pointer-events: none;
-}
-.seven-orb-thinking .seven-orb-red-structure { animation-duration: 42s; }
-.seven-orb-thinking .seven-orb-red-edge { animation-duration: 49s; }
-.seven-orb-thinking .seven-orb-piece { animation-duration: calc(var(--piece-duration) * .8); }
-.seven-orb-thinking .seven-orb-yellow-solid { animation-duration: 19s; }
-.seven-orb-thinking .seven-orb-yellow-bars { animation-duration: 11s; }
-.seven-orb-thinking .seven-orb-yellow-line { animation-duration: 14s; }
-.seven-orb-thinking .seven-orb-green-bright { animation-duration: 14s; }
-.seven-orb-thinking .seven-orb-green-fine { animation-duration: 11s; }
-.seven-orb-thinking .seven-orb-green-circuit { animation-duration: 18s; }
-.seven-orb-thinking .seven-orb-green-outer { animation-duration: 23s; }
-.seven-orb-speaking .seven-orb-red-structure { animation-duration: 49s; }
-.seven-orb-speaking .seven-orb-red-edge { animation-duration: 56s; }
-.seven-orb-speaking .seven-orb-yellow-solid { animation-duration: 25s; }
-.seven-orb-speaking .seven-orb-yellow-bars { animation-duration: 14s; }
-.seven-orb-speaking .seven-orb-yellow-line { animation-duration: 18s; }
-.seven-orb-speaking .seven-orb-green-bright { animation-duration: 18s; }
-.seven-orb-speaking .seven-orb-green-fine { animation-duration: 14s; }
-.seven-orb-speaking .seven-orb-green-circuit { animation-duration: 21s; }
-.seven-orb-speaking .seven-orb-green-outer { animation-duration: 30s; }
-@keyframes sevenOrbOuter { to { transform: rotate(360deg); } }
-@keyframes sevenOrbRedEdge { to { transform: rotate(-360deg); } }
-@keyframes sevenOrbYellowSolid { to { transform: rotate(-360deg); } }
-@keyframes sevenOrbYellowBars { to { transform: rotate(360deg); } }
-@keyframes sevenOrbYellowLine { to { transform: rotate(-360deg); } }
-@keyframes sevenOrbCore { to { transform: rotate(360deg); } }
-@keyframes sevenOrbFine { to { transform: rotate(-360deg); } }
-@keyframes sevenOrbCircuit { to { transform: rotate(360deg); } }
-@keyframes sevenOrbGreenOuter { to { transform: rotate(-360deg); } }
-@keyframes sevenOrbPiece {
-  0% { transform: rotate(0deg); opacity: .12; filter: grayscale(1) contrast(1.16) brightness(1.17); }
-  50% { transform: rotate(180deg); opacity: .35; filter: grayscale(1) contrast(1.2) brightness(1.25); }
-  100% { transform: rotate(360deg); opacity: .12; filter: grayscale(1) contrast(1.16) brightness(1.17); }
+  filter: url(#seven-orb-red-cutout);
+  animation: none;
 }
 @media (max-width: 760px) {
   .seven-orb {

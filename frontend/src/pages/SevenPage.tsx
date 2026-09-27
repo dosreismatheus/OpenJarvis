@@ -278,24 +278,24 @@ export function SevenPage() {
       <section className="seven-conversation" aria-label="Conversa com Seven">
         <div className="seven-intro">
           <div className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
-            <span className="seven-orb-art seven-orb-red-structure" aria-hidden="true" />
-            <span className="seven-orb-pieces" aria-hidden="true">
-              <span className="seven-orb-art seven-orb-piece" />
-              <span className="seven-orb-art seven-orb-piece" />
-              <span className="seven-orb-art seven-orb-piece" />
-              <span className="seven-orb-art seven-orb-piece" />
-              <span className="seven-orb-art seven-orb-piece" />
-              <span className="seven-orb-art seven-orb-piece" />
-            </span>
-            <span className="seven-orb-art seven-orb-red-edge" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-yellow-solid" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-yellow-bars" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-yellow-line" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-green seven-orb-green-bright" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-green seven-orb-green-fine" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-green seven-orb-green-circuit" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-green seven-orb-green-outer" aria-hidden="true" />
-            <span className="seven-orb-color" aria-hidden="true" />
+            <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
+              <defs>
+                <filter id="seven-orb-red-cutout" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
+                  <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
+                  <feComponentTransfer in="gray" result="red-palette">
+                    <feFuncR type="linear" slope="2" />
+                    <feFuncG type="linear" slope="2.1" intercept="-1" />
+                    <feFuncB type="linear" slope="2.3" intercept="-1.2" />
+                  </feComponentTransfer>
+                  <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="light" />
+                  <feComponentTransfer in="light" result="visible-light">
+                    <feFuncA type="linear" slope="4.4" intercept="-0.65" />
+                  </feComponentTransfer>
+                  <feComposite in="red-palette" in2="visible-light" operator="in" />
+                </filter>
+              </defs>
+            </svg>
+            <span className="seven-orb-art" aria-hidden="true" />
           </div>
           <p className="seven-eyebrow">SEVEN · ASSISTENTE DA 7BUILD</p>
           <h1>{messages.length ? stateLabel : <>À disposição, <em>{profile?.address || 'senhor'}.</em></>}</h1>
