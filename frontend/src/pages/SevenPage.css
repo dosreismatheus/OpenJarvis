@@ -69,6 +69,8 @@
   z-index: 0;
   pointer-events: none;
   filter: blur(18px) saturate(1.1);
+  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 40%, #000 53%);
+  mask-image: radial-gradient(circle closest-side, transparent 0 40%, #000 53%);
   opacity: 0;
   transition: opacity .3s ease;
 }
