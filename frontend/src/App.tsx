@@ -2,6 +2,11 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Routes, Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { ChatPage } from './pages/ChatPage';
+import { SevenPage } from './pages/SevenPage';
+import { SevenSettings } from './components/SevenSettings';
+import { SecondBrainPage } from './pages/SecondBrainPage';
+import { SquadsPage } from './pages/SquadsPage';
+import { SquadBrainMapPage } from './pages/SquadBrainMapPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { GetStartedPage } from './pages/GetStartedPage';
@@ -182,8 +187,15 @@ export default function App() {
     <>
       <UpdateChecker />
       <Routes>
+        <Route index element={<SevenPage />} />
+        <Route path="seven/settings" element={<div className="min-h-screen p-6" style={{ background: 'var(--color-bg)' }}><div className="max-w-2xl mx-auto"><SevenSettings /></div></div>} />
+        <Route path="brain" element={<SecondBrainPage />} />
+        <Route path="brain/notes" element={<SecondBrainPage view="notes" />} />
+        <Route path="squads" element={<SquadsPage />} />
+        <Route path="squads/:squadId" element={<SquadsPage />} />
+        <Route path="squads/:squadId/brain" element={<SquadBrainMapPage />} />
         <Route element={<Layout />}>
-          <Route index element={<ChatPage />} />
+          <Route path="chat" element={<ChatPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="get-started" element={<GetStartedPage />} />

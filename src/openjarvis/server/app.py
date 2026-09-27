@@ -20,6 +20,8 @@ from openjarvis.server.dashboard import dashboard_router
 from openjarvis.server.digest_routes import create_digest_router
 from openjarvis.server.research_router import router as research_router
 from openjarvis.server.routes import router
+from openjarvis.server.seven_router import router as seven_router
+from openjarvis.server.squads_router import router as squads_router
 from openjarvis.server.upload_router import router as upload_router
 
 logger = logging.getLogger(__name__)
@@ -492,6 +494,8 @@ def create_app(
                     pass
 
     app.include_router(router)
+    app.include_router(seven_router)
+    app.include_router(squads_router)
     app.include_router(dashboard_router)
     app.include_router(comparison_router)
     app.include_router(create_connectors_router())

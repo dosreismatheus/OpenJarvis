@@ -1,0 +1,168 @@
+.seven-settings-brain {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid rgba(237, 66, 72, .22);
+  border-radius: 16px;
+  background: linear-gradient(145deg, #171114, #0d0d10 70%);
+  color: #f4eeee;
+}
+
+.seven-settings-brain-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.seven-settings-brain-head span,
+.seven-map-heading span {
+  color: #ed6468;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.seven-settings-brain-head h4 {
+  margin: 5px 0 3px;
+  font-size: 20px;
+  font-weight: 680;
+}
+
+.seven-settings-brain-head p {
+  margin: 0;
+  color: #9c9094;
+  font-size: 12px;
+}
+
+.seven-settings-brain-head a,
+.seven-map-detail-top button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  border: 0;
+  background: transparent;
+  color: #f19b9e;
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.seven-settings-brain-count {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 18px 0 15px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  color: #ac9fa4;
+  font-size: 12px;
+}
+
+.seven-settings-brain-count strong { color: #f5eeee; font-size: 13px; }
+.seven-settings-brain-count > span { width: 3px; height: 3px; border-radius: 50%; background: #69585e; }
+.seven-map-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+.seven-map-heading small { color: #81777c; font-size: 11px; }
+
+.seven-settings-brain .seven-graph-wrap {
+  display: block;
+  min-height: 0;
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(120, 24, 32, .12), transparent 55%),
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+    #0b0c0e;
+  background-size: auto, 30px 30px, 30px 30px, auto;
+}
+
+.seven-settings-brain .seven-graph { display: block; width: 100%; min-width: 520px; max-height: none; overflow: visible; }
+.seven-settings-brain .seven-graph-line { fill: none; stroke: #9b565b; stroke-width: 1.5; stroke-opacity: .16; stroke-dasharray: none; animation: none; transition: stroke-opacity .15s, stroke-width .15s; }
+.seven-settings-brain .seven-graph-line-active { stroke: #ef5960; stroke-width: 2.3; stroke-opacity: .75; }
+.seven-settings-brain .seven-graph-node { cursor: pointer; outline: none; transition: opacity .15s; }
+.seven-settings-brain .seven-graph-node-muted { opacity: .34; }
+.seven-settings-brain .seven-graph-node:focus-visible rect { filter: drop-shadow(0 0 8px rgba(237,66,72,.75)); }
+.seven-settings-brain .seven-graph-node-active rect { filter: drop-shadow(0 0 9px rgba(237,66,72,.25)); }
+.seven-settings-brain .seven-graph-area { fill: #a99ba1; font-size: 10px; font-weight: 600; }
+.seven-settings-brain .seven-graph-title { fill: #f5eff1; font-size: 12px; font-weight: 650; }
+
+.seven-map-detail {
+  margin-top: 12px;
+  padding: 14px 15px;
+  border: 1px solid rgba(237,66,72,.22);
+  border-radius: 12px;
+  background: rgba(237,66,72,.055);
+}
+
+.seven-map-detail-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.seven-map-detail-top span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+.seven-map-detail-top h3 { margin: 3px 0 0; color: #fff; font-size: 16px; font-weight: 650; }
+.seven-map-detail > p { margin: 10px 0 12px; color: #b8acb1; font-size: 12px; line-height: 1.5; }
+.seven-map-related { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.seven-map-related > span { margin-right: 3px; color: #84797e; font-size: 11px; }
+.seven-map-related button { padding: 4px 7px; border: 1px solid rgba(237,66,72,.28); border-radius: 6px; background: rgba(237,66,72,.09); color: #f0c5c6; font-size: 11px; cursor: pointer; }
+.seven-map-related button:hover { background: rgba(237,66,72,.2); }
+.seven-map-related em { color: #83777d; font-size: 11px; font-style: normal; }
+
+@media (max-width: 640px) {
+  .seven-settings-brain-head { flex-direction: column; }
+  .seven-map-heading { flex-direction: column; gap: 2px; }
+}
+
+.seven-settings-brain-link{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:20px;padding:15px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg-secondary)}
+.seven-settings-brain-link>div{display:grid;gap:4px}.seven-settings-brain-link strong{color:var(--color-text);font-size:13px}.seven-settings-brain-link span{color:var(--color-text-secondary);font-size:11px;line-height:1.5}.seven-settings-brain-link a{display:flex;align-items:center;gap:5px;flex:none;color:var(--color-accent);font-size:12px;font-weight:650;text-decoration:none}
+
+.seven-brain-workspace{color:#f4eeee}.seven-brain-loading{padding:30px;color:#a89a9f}.seven-brain-workspace .seven-settings-brain-head{align-items:center}.seven-brain-workspace .seven-settings-brain-head h1{font-size:clamp(27px,3vw,40px);font-weight:720;letter-spacing:-.045em;margin:7px 0 5px}.seven-brain-workspace .seven-settings-brain-head p{font-size:14px}.seven-brain-workspace .seven-settings-brain-head a{padding:10px 12px;border:1px solid #63353b;border-radius:9px;background:#211418}
+.seven-brain-workspace .seven-settings-brain-count{margin:26px 0 20px;font-size:13px}.seven-brain-workspace .seven-settings-brain-count strong{font-size:17px}
+.seven-brain-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}.seven-brain-toolbar label{display:flex;align-items:center;gap:9px;flex:1;min-width:240px;padding:0 12px;height:40px;border:1px solid #493137;border-radius:9px;background:#151114;color:#b2a4a9}.seven-brain-toolbar input{width:100%;border:0;outline:0;background:transparent;color:#f5edef;font:inherit;font-size:13px}.seven-brain-toolbar input::placeholder{color:#786d72}.seven-brain-toolbar select{height:40px;min-width:160px;padding:0 11px;border:1px solid #493137;border-radius:9px;background:#151114;color:#f5edef;font:inherit;font-size:12px}.seven-brain-toolbar>button{display:flex;align-items:center;gap:6px;height:40px;padding:0 13px;border:1px solid #a63840;border-radius:9px;background:#521a20;color:#fff;font-size:12px;font-weight:650;cursor:pointer}
+.seven-brain-workspace .seven-settings-brain{margin:0;padding:20px 24px}.seven-brain-workspace .seven-graph-wrap{max-height:760px;overflow:auto}.seven-brain-workspace .seven-settings-brain .seven-graph{width:100%;max-width:900px;min-width:650px;margin:auto}
+.seven-brain-empty{padding:20px;text-align:center;color:#a5999e;font-size:13px}.seven-brain-map-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;color:#8f8186;font-size:12px}.seven-brain-map-footer a{display:flex;align-items:center;gap:5px;color:#f0a4a7;text-decoration:none;font-weight:650}
+.seven-brain-notes-grid{display:grid;grid-template-columns:minmax(250px,360px) minmax(0,1fr);gap:18px;min-height:520px}.seven-brain-notes-list{min-height:260px;max-height:70vh;overflow-y:auto;padding:8px;border:1px solid #503035;border-radius:13px;background:#151114;scrollbar-width:thin;scrollbar-color:#633037 transparent}.seven-brain-notes-list button{display:flex;align-items:center;gap:11px;width:100%;padding:12px;text-align:left;border:1px solid transparent;border-radius:9px;background:transparent;color:#e7dcdf;cursor:pointer}.seven-brain-notes-list button:hover,.seven-brain-notes-list button.active{background:#26181c;border-color:#854047}.seven-brain-notes-list button>span:first-child{width:8px;height:8px;border-radius:50%;flex:none}.seven-brain-notes-list button>span:nth-child(2){display:grid;gap:3px;flex:1;min-width:0}.seven-brain-notes-list strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.seven-brain-notes-list small{font-size:10px;color:#9d8f94}.seven-brain-notes-list svg{color:#907e84}
+.seven-brain-editor-panel{border:1px solid #503035;border-radius:13px;background:#151114;padding:20px;min-width:0}.seven-brain-editor-panel>p{color:#9c8d93;font-size:13px}.seven-brain-editor{display:grid;gap:14px}.seven-brain-editor-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.seven-brain-editor-heading strong{font-size:17px}.seven-brain-editor-heading button{background:transparent;border:0;color:#c68f94;cursor:pointer;font-size:12px}.seven-brain-editor label{display:grid;gap:6px;color:#ad9fa4;font-size:12px}.seven-brain-editor textarea{min-height:220px;resize:vertical}.seven-brain-delete{display:flex;align-items:center;gap:6px;justify-self:start;color:#f09ba0;background:transparent;border:0;cursor:pointer;font-size:12px}
+.seven-brain-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px}.seven-brain-actions span{color:#c0a5aa;font-size:12px}.seven-brain-actions button{display:flex;align-items:center;gap:7px;padding:10px 15px;border:0;border-radius:9px;background:#ed4248;color:#fff;font-weight:700;font-size:12px;cursor:pointer}.seven-brain-actions button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:760px){.seven-settings-brain-link{align-items:flex-start;flex-direction:column}.seven-brain-workspace .seven-settings-brain-head{align-items:flex-start}.seven-brain-workspace .seven-settings-brain{padding:14px}.seven-brain-notes-grid{grid-template-columns:1fr}.seven-brain-notes-list{max-height:300px}.seven-brain-toolbar select{flex:1}}
+
+.seven-brain-map-page{height:100%;min-height:100vh;width:100%;position:relative;overflow:hidden;background:#292f35;color:#eef2f3;background-image:radial-gradient(circle,rgba(226,235,238,.095) 1px,transparent 1.2px);background-size:28px 28px}
+.seven-brain-map-page .seven-brain-map-fullscreen{position:absolute;inset:0;overflow:hidden;background:transparent;border:0;border-radius:0}
+.seven-brain-map-page .seven-graph-wrap{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;touch-action:none;cursor:grab}
+.seven-brain-map-page .seven-graph-wrap:active{cursor:grabbing}
+.seven-brain-map-page .seven-graph{display:block;width:100%;height:100%;min-width:0;max-height:none;overflow:hidden;touch-action:none;user-select:none}
+.seven-brain-map-page .seven-graph-line{fill:none;stroke:#c4888d;stroke-width:.85;stroke-opacity:.26;transition:stroke-opacity .18s,stroke-width .18s}
+.seven-brain-map-page .seven-graph-line-active{stroke:#ff7a80;stroke-width:1.5;stroke-opacity:.92}
+.seven-brain-map-page .seven-graph-focus-layer{transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+.seven-brain-map-page .seven-graph-node{cursor:pointer;outline:0;transition:opacity .2s,transform .25s ease;transform-box:fill-box;transform-origin:center}.seven-brain-map-page .seven-graph-node-muted{opacity:.14}.seven-brain-map-page .seven-graph-node-connected{transform:scale(1.38)}.seven-brain-map-page .seven-graph-node-active{transform:scale(1.62)}
+.seven-brain-map-page .seven-brain-data-dot{stroke:rgba(255,242,243,.38);stroke-width:.75;filter:drop-shadow(0 0 4px rgba(211,81,90,.2));transition:r .18s,filter .18s,stroke .18s}
+.seven-brain-map-page .seven-graph-node:hover .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node-active .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node:focus-visible .seven-brain-data-dot{filter:drop-shadow(0 0 10px currentColor);stroke:#fff;stroke-width:1.8}
+.seven-brain-map-page .seven-graph-node:focus-visible{outline:none}.seven-brain-map-page .seven-graph-node:focus-visible circle:first-child{stroke:rgba(255,255,255,.6);stroke-width:1.4}
+.seven-brain-map-page .seven-graph-title{fill:#fff;paint-order:stroke;stroke:#292f35;stroke-width:4px;font-size:15px;font-weight:650}
+.seven-brain-map-back{position:absolute;top:20px;left:20px;z-index:5;width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(236,243,245,.16);border-radius:10px;background:rgba(37,44,50,.82);color:#e7eff0;text-decoration:none;backdrop-filter:blur(10px);box-shadow:0 5px 20px #14191c35}.seven-brain-map-back:hover{background:#343e44}
+.seven-graph-toolbar{position:absolute;z-index:4;top:20px;right:20px;display:flex;align-items:center;gap:16px;padding:6px 7px 6px 13px;border:1px solid rgba(236,243,245,.15);border-radius:11px;background:rgba(37,44,50,.86);color:#c2cbcd;backdrop-filter:blur(12px);box-shadow:0 5px 20px #14191c35}
+.seven-graph-toolbar>span{display:flex;align-items:center;gap:8px;font-size:11px;font-variant-numeric:tabular-nums}.seven-graph-toolbar>span i,.seven-graph-hint i{width:3px;height:3px;border-radius:50%;background:#788488}
+.seven-graph-toolbar>div{display:flex;align-items:center;gap:3px}.seven-graph-toolbar button{width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:7px;background:transparent;color:#d2dcde;cursor:pointer}.seven-graph-toolbar button:hover{background:rgba(231,241,243,.12);color:#fff}.seven-graph-toolbar button:focus-visible{outline:2px solid #b9d6da;outline-offset:1px}.seven-graph-zoom-level{min-width:34px;text-align:center;color:#aab6b9;font-size:10px;font-variant-numeric:tabular-nums}
+.seven-graph-hint{position:absolute;z-index:3;left:22px;bottom:20px;display:flex;align-items:center;gap:9px;padding:8px 11px;border:1px solid rgba(236,243,245,.1);border-radius:8px;background:rgba(37,44,50,.76);color:#aeb9bb;font-size:11px;pointer-events:none;backdrop-filter:blur(10px)}
+.seven-brain-map-page .seven-map-detail{position:absolute;right:22px;bottom:20px;z-index:4;width:min(360px,calc(100vw - 44px));margin:0;padding:17px;border:1px solid rgba(236,243,245,.2);border-radius:13px;background:rgba(39,47,53,.94);box-shadow:0 16px 55px rgba(0,0,0,.32);backdrop-filter:blur(16px)}.seven-map-detail-actions{display:flex;align-items:center;gap:6px}.seven-map-detail-actions button:last-child{width:27px;height:27px;display:grid;place-items:center;border:1px solid rgba(236,243,245,.16);border-radius:7px;color:#dce5e6}
+@media(max-width:680px){.seven-brain-map-back{top:12px;left:12px}.seven-graph-toolbar{top:12px;right:12px;gap:8px;padding-left:10px}.seven-graph-toolbar>span{font-size:10px}.seven-graph-hint{left:12px;bottom:12px;font-size:10px}.seven-brain-map-page .seven-map-detail{right:12px;bottom:54px;width:min(340px,calc(100vw - 24px))}}
+
+/* Seven's charcoal and red palette for the 3D knowledge graph. */
+.seven-brain-map-page{--seven-red:#ed4248;--seven-red-soft:#ff7a80;background:#08090b;color:#f4f0f0;background-image:radial-gradient(ellipse at 50% 48%,rgba(129,15,25,.19),transparent 52%),radial-gradient(circle,rgba(233,190,194,.075) 1px,transparent 1.2px);background-size:auto,28px 28px}
+.seven-brain-map-page .seven-graph-line{stroke:#c9858b;stroke-opacity:.26}
+.seven-brain-map-page .seven-graph-line-active{stroke:var(--seven-red-soft);stroke-width:1.5;stroke-opacity:.96}
+.seven-brain-map-page .seven-brain-data-dot{stroke:rgba(255,242,243,.38);filter:drop-shadow(0 0 4px rgba(211,81,90,.2))}
+.seven-brain-map-page .seven-graph-node-connected .seven-brain-data-dot{filter:drop-shadow(0 0 8px rgba(237,66,72,.7));stroke:rgba(255,242,243,.75)}
+.seven-brain-map-page .seven-graph-node:hover .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node-active .seven-brain-data-dot,.seven-brain-map-page .seven-graph-node:focus-visible .seven-brain-data-dot{filter:drop-shadow(0 0 10px rgba(237,66,72,.65))}
+.seven-brain-map-page .seven-graph-title{stroke:#110b0d}
+.seven-brain-map-page .seven-brain-map-back{border-color:rgba(237,66,72,.28);background:rgba(24,14,17,.88);color:#f4dadd;box-shadow:0 5px 20px #08090b55}
+.seven-brain-map-page .seven-brain-map-back:hover{background:#3c171e}
+.seven-brain-map-page .seven-graph-toolbar{border-color:rgba(237,66,72,.24);background:rgba(24,14,17,.88);color:#c7b8bb;box-shadow:0 5px 20px #08090b55}
+.seven-brain-map-page .seven-graph-toolbar>span i,.seven-brain-map-page .seven-graph-hint i{background:#885057}
+.seven-brain-map-page .seven-graph-toolbar button{color:#e2c7ca}
+.seven-brain-map-page .seven-graph-toolbar button:hover{background:rgba(237,66,72,.15)}
+.seven-brain-map-page .seven-graph-toolbar button:focus-visible{outline-color:#ff8b90}
+.seven-brain-map-page .seven-graph-zoom-level{color:#c8aaae}
+.seven-brain-map-page .seven-graph-hint{border-color:rgba(237,66,72,.18);background:rgba(24,14,17,.82);color:#b9a5a9}
+.seven-brain-map-page .seven-map-detail{border-color:rgba(237,66,72,.3);background:rgba(24,14,17,.96);box-shadow:0 16px 55px rgba(0,0,0,.42)}
+.seven-brain-map-page .seven-map-detail-actions button:last-child{border-color:rgba(237,66,72,.22);color:#f0dadd}

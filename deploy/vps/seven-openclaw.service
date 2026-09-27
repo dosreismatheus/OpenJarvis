@@ -1,0 +1,23 @@
+[Unit]
+Description=Seven OpenClaw Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sevenjarvis
+Group=sevenjarvis
+WorkingDirectory=/var/lib/seven-openjarvis
+Environment=HOME=/var/lib/seven-openjarvis
+Environment=PATH=/var/lib/seven-openjarvis/.openclaw/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=/etc/seven-openclaw.env
+ExecStart=/var/lib/seven-openjarvis/.openclaw/bin/openclaw gateway run --bind loopback --port 18789
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/seven-openjarvis
+
+[Install]
+WantedBy=multi-user.target

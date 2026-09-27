@@ -1,0 +1,56 @@
+// Configuration for /var/lib/seven-openjarvis/.openclaw/openclaw.json.
+// OPENCLAW_GATEWAY_TOKEN and OPENAI_API_KEY are supplied by the systemd
+// EnvironmentFile, never stored in this file.
+{
+  gateway: {
+    mode: "local",
+    bind: "loopback",
+    port: 18789,
+    auth: { mode: "token" },
+    http: { endpoints: { chatCompletions: { enabled: true } } },
+  },
+  agents: {
+    defaults: {
+      workspace: "/var/lib/seven-openjarvis/.openclaw/workspace",
+      model: {
+        primary: "openai/gpt-6-sol",
+        fallbacks: ["openai/gpt-6-luna"],
+      },
+      models: {
+        "openai/*": { agentRuntime: { id: "openclaw" } },
+        "ollama/*": { agentRuntime: { id: "openclaw" } },
+      },
+    },
+    entries: {
+      main: { default: true, workspace: "/var/lib/seven-openjarvis/.openclaw/workspace" },
+      "local-chat": {
+        name: "Seven local rápido",
+        workspace: "/var/lib/seven-openjarvis/.openclaw/workspace-local-chat",
+        model: { primary: "ollama/qwen3.5:0.8b", fallbacks: [] },
+        skills: [],
+        experimental: { localModelLean: true },
+        tools: { allow: ["memory_search", "memory_get"] },
+      },
+    },
+  },
+  models: {
+    providers: {
+      ollama: {
+        baseUrl: "http://127.0.0.1:11434",
+        apiKey: "ollama-local",
+        api: "ollama",
+        models: [
+          { id: "qwen3.5:0.8b", name: "Qwen 3.5 0.8B local rápido", input: ["text"], contextTokens: 8192, maxTokens: 384,
+            params: { num_ctx: 8192, thinking: false, keep_alive: "15m", num_predict: 384 } },
+          { id: "qwen3.5:2b", name: "Qwen 3.5 2B local", input: ["text"], contextTokens: 8192, maxTokens: 384,
+            params: { num_ctx: 8192, thinking: false, keep_alive: "15m", num_predict: 384 } },
+        ],
+      },
+    },
+  },
+  memory: {
+    search: {
+      extraPaths: ["/var/lib/seven-openjarvis/Documents/Seven Brain"],
+    },
+  },
+}
