@@ -183,6 +183,19 @@
   padding: 0;
   margin: 0 auto;
 }
+.seven-avatar-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+.seven-avatar-wrap .seven-orb-stage {
+  width: min(50vh, 470px, 80vw);
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0;
+}
 .seven-composer.seven-composer-minimal { width: 100%; margin: 0; }
 .seven-composer-actions { justify-content: flex-end; }
 .seven-composer-actions > div { margin-left: auto; }

@@ -9,6 +9,8 @@ import {
   type SevenProfile,
 } from '../lib/seven';
 import './SevenPage.css';
+import { SevenBrainBackdrop } from './SevenBrainBackdrop';
+import { useSevenOrbMotion } from './useSevenOrbMotion';
 
 type ChatItem = { id: string; role: 'user' | 'assistant'; text: string };
 const CHAT_KEY = 'seven-chat-v1';
@@ -34,6 +36,7 @@ export function SevenPage() {
   const [messages, setMessages] = useState<ChatItem[]>(loadChat);
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState<'ready' | 'thinking' | 'preparing' | 'speaking'>('ready');
+  const orbRef = useSevenOrbMotion(status);
   const [error, setError] = useState('');
   const [brainSync, setBrainSync] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [, setReplayReady] = useState(false);
@@ -356,6 +359,36 @@ export function SevenPage() {
 
     <main className="seven-main seven-main-minimal">
       <section className="seven-conversation seven-conversation-minimal" aria-label="Conversa com Seven">
+        <div className="seven-avatar-wrap">
+          <div className={`seven-orb-stage seven-orb-stage-${status}`}>
+            <SevenBrainBackdrop notes={profile?.notes ?? []} />
+            <canvas ref={voiceCanvasRef} className="seven-orb-voice" aria-hidden="true" />
+            <div ref={orbRef} className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${status === 'ready' ? 'pronto' : status === 'thinking' || status === 'preparing' ? 'processando' : 'falando'}`}>
+              <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
+                <defs>
+                  <filter id="seven-orb-red-cutout" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
+                    <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
+                    <feComponentTransfer in="gray" result="red-palette">
+                      <feFuncR type="linear" slope="2" />
+                      <feFuncG type="linear" slope="2.1" intercept="-1" />
+                      <feFuncB type="linear" slope="2.3" intercept="-1.2" />
+                    </feComponentTransfer>
+                    <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="light" />
+                    <feComponentTransfer in="light" result="visible-light">
+                      <feFuncA type="linear" slope="4.4" intercept="-0.65" />
+                    </feComponentTransfer>
+                    <feComposite in="red-palette" in2="visible-light" operator="in" />
+                  </filter>
+                </defs>
+              </svg>
+              <span className="seven-orb-art seven-orb-art-rest" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-band" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-clock-ticks" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-a" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-b" aria-hidden="true" />
+            </div>
+          </div>
+        </div>
         <form className="seven-composer seven-composer-minimal" onSubmit={(event) => { event.preventDefault(); void submit(); }}>
           <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void submit(); } }} placeholder={error || "Escreva para o Seven..."} rows={2} aria-label="Mensagem para o Seven" aria-invalid={!!error} />
           <div className="seven-composer-bottom seven-composer-actions">
