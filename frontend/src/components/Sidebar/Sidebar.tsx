@@ -17,6 +17,8 @@ import {
   Loader2,
   ScrollText,
   Database,
+  Sparkles,
+  BrainCircuit,
 } from 'lucide-react';
 import { ConversationList } from './ConversationList';
 import { useAppStore } from '../../lib/store';
@@ -40,26 +42,29 @@ export function Sidebar() {
 
   const ThemeIcon = settings.theme === 'light' ? Sun : settings.theme === 'dark' ? Moon : Monitor;
   const nextTheme = settings.theme === 'light' ? 'dark' : settings.theme === 'dark' ? 'system' : 'light';
+  const themeLabel = { light: 'claro', dark: 'escuro', system: 'sistema' };
 
   const messages = useAppStore((s) => s.messages);
   const handleNewChat = () => {
     // Don't create a new chat if the current one is empty
     if (messages.length === 0) {
-      navigate('/');
+      navigate('/chat');
       return;
     }
     createConversation(selectedModel);
-    navigate('/');
+    navigate('/chat');
   };
 
   const navItems = [
-    { path: '/', icon: MessageSquare, label: 'Chat' },
-    { path: '/dashboard', icon: BarChart3, label: 'Dashboard' },
-    { path: '/data-sources', icon: Database, label: 'Data Sources' },
-    { path: '/agents', icon: Bot, label: 'Agents' },
-    { path: '/logs', icon: ScrollText, label: 'Logs' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
-    { path: '/get-started', icon: Rocket, label: 'Get Started' },
+    { path: '/', icon: Sparkles, label: 'Seven' },
+    { path: '/brain', icon: BrainCircuit, label: 'Segundo Cérebro' },
+    { path: '/chat', icon: MessageSquare, label: 'Conversa anterior' },
+    { path: '/dashboard', icon: BarChart3, label: 'Painel' },
+    { path: '/data-sources', icon: Database, label: 'Fontes de dados' },
+    { path: '/agents', icon: Bot, label: 'Agentes' },
+    { path: '/logs', icon: ScrollText, label: 'Registros' },
+    { path: '/settings', icon: Settings, label: 'Configurações' },
+    { path: '/get-started', icon: Rocket, label: 'Primeiros passos' },
   ];
 
   return (
@@ -109,7 +114,7 @@ export function Sidebar() {
                 style={{ color: 'var(--color-text-secondary)' }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-bg-tertiary)')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                title={`Theme: ${settings.theme} (click for ${nextTheme})`}
+                title={`Tema: ${themeLabel[settings.theme]} (clique para ${themeLabel[nextTheme]})`}
               >
                 <ThemeIcon size={16} />
               </button>
@@ -119,7 +124,7 @@ export function Sidebar() {
                 style={{ color: 'var(--color-text-secondary)' }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-bg-tertiary)')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                title="New chat"
+                title="Nova conversa"
               >
                 <Plus size={18} />
               </button>
@@ -149,12 +154,12 @@ export function Sidebar() {
                 style={{ color: deepResearch ? 'var(--color-accent)' : 'var(--color-text)' }}
               >
                 {deepResearch
-                  ? 'Deep Research'
-                  : selectedModel || serverInfo?.model || 'Select model'}
+                  ? 'Pesquisa profunda'
+                  : selectedModel || serverInfo?.model || 'Selecionar modelo'}
               </span>
               {modelLoading && (
                 <span className="text-[10px] block text-left" style={{ color: 'var(--color-accent)' }}>
-                  Loading model...
+                  Carregando modelo...
                 </span>
               )}
             </div>
@@ -177,7 +182,7 @@ export function Sidebar() {
               <Search size={14} style={{ color: 'var(--color-text-tertiary)' }} />
               <input
                 type="text"
-                placeholder="Search chats..."
+                placeholder="Buscar conversas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent outline-none text-sm"

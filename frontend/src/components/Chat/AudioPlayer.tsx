@@ -88,7 +88,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
             className="text-xs font-medium"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            Morning Digest
+            Resumo matinal
           </span>
         </div>
 

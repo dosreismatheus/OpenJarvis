@@ -12,14 +12,14 @@ export function DashboardPage() {
         <header className="mb-6">
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>
-              System Overview
+              Visão geral do sistema
             </h1>
             <div className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
               {stamp}
             </div>
           </div>
           <p className="text-sm mt-2 max-w-2xl" style={{ color: 'var(--color-text-secondary)' }}>
-            Live telemetry for the on-device inference engine — power draw, token throughput, and cost savings versus cloud APIs.
+            Dados em tempo real da IA local: consumo de energia, processamento de tokens e economia em relação às APIs em nuvem.
           </p>
         </header>
 

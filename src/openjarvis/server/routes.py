@@ -32,6 +32,12 @@ from openjarvis.server.models import (
 
 router = APIRouter()
 
+_CLOUD_KEY_NAMES = frozenset({
+    "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GEMINI_API_KEY",
+    "GOOGLE_API_KEY", "OPENROUTER_API_KEY",
+})
+_cloud_key_lock = threading.Lock()
+
 
 def _to_messages(chat_messages) -> list[Message]:
     """Convert Pydantic ChatMessage objects to core Message objects."""
@@ -163,6 +169,7 @@ async def chat_completions(request_body: ChatCompletionRequest, request: Request
     model = request_body.model
     use_server_agent = (
         agent is not None
+        and request.headers.get("X-Seven-Direct") != "1"
         and not request_body.tools
         and (not request_body.stream or bool(getattr(agent, "_tools", None)))
     )
@@ -1213,6 +1220,75 @@ async def delete_model(model_name: str, request: Request):
         )
 
     return {"status": "deleted", "model": model_name}
+
+
+def _cloud_key_file_lines() -> list[str]:
+    path = get_config_dir() / "cloud-keys.env"
+    return path.read_text(encoding="utf-8").splitlines() if path.exists() else []
+
+
+def _update_cloud_key_file(key_name: str, value: str | None) -> None:
+    """Replace one key atomically without exposing it in a response or log."""
+    import os
+    import tempfile
+
+    path = get_config_dir() / "cloud-keys.env"
+    with _cloud_key_lock:
+        lines = [
+            line for line in _cloud_key_file_lines()
+            if line.strip().split("=", 1)[0].strip() != key_name
+        ]
+        if value is not None:
+            lines.append(f"{key_name}={value}")
+        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        fd, tmp_name = tempfile.mkstemp(prefix=".cloud-keys-", dir=path.parent)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as target:
+                target.write("\n".join(lines) + ("\n" if lines else ""))
+                target.flush()
+                os.fsync(target.fileno())
+            os.replace(tmp_name, path)
+        finally:
+            if os.path.exists(tmp_name):
+                os.unlink(tmp_name)
+
+
+@router.get("/v1/cloud/keys/status")
+async def cloud_key_status():
+    """Return presence only; never send credential values to the browser."""
+    from openjarvis.server.cloud_router import _load_keys
+
+    keys = _load_keys()
+    return {name: bool(keys.get(name)) for name in _CLOUD_KEY_NAMES}
+
+
+@router.put("/v1/cloud/keys/{key_name}")
+async def set_cloud_key(key_name: str, request: Request):
+    import os
+
+    if key_name not in _CLOUD_KEY_NAMES:
+        raise HTTPException(status_code=400, detail="Provedor de API desconhecido")
+    body = await request.json()
+    value = body.get("value") if isinstance(body, dict) else None
+    if not isinstance(value, str) or not value or len(value) > 10000 or any(c in value for c in "\r\n\0"):
+        raise HTTPException(status_code=400, detail="Chave de API inválida")
+    if os.environ.get(key_name):
+        raise HTTPException(status_code=409, detail="Esta chave é gerenciada pelo ambiente do servidor")
+    _update_cloud_key_file(key_name, value)
+    # Direct cloud routing reads cloud-keys.env for every request.
+    return {"set": True}
+
+
+@router.delete("/v1/cloud/keys/{key_name}")
+async def remove_cloud_key(key_name: str):
+    import os
+
+    if key_name not in _CLOUD_KEY_NAMES:
+        raise HTTPException(status_code=400, detail="Provedor de API desconhecido")
+    if os.environ.get(key_name):
+        raise HTTPException(status_code=409, detail="Esta chave é gerenciada pelo ambiente do servidor")
+    _update_cloud_key_file(key_name, None)
+    return {"set": False}
 
 
 @router.post("/v1/cloud/reload")

@@ -103,7 +103,7 @@ export function UpdateChecker() {
       const { relaunch } = await import('@tauri-apps/plugin-process');
       await relaunch();
     } catch {
-      setErrorMsg('Please restart the application manually');
+      setErrorMsg('Reinicie o aplicativo manualmente');
       setState('error');
       setTimeout(() => setState('idle'), 5000);
     }
@@ -121,18 +121,18 @@ export function UpdateChecker() {
     <div style={styles.banner}>
       {state === 'available' && (
         <div style={styles.row}>
-          <span>Update available: <strong>v{version}</strong></span>
+          <span>Atualização disponível: <strong>v{version}</strong></span>
           <div style={styles.actions}>
-            <button style={styles.primaryBtn} onClick={handleDownload}>Download</button>
-            <button style={styles.secondaryBtn} onClick={() => setDismissed(true)}>Later</button>
-            <button style={styles.muteBtn} onClick={handleDisable}>Disable auto-updates</button>
+            <button style={styles.primaryBtn} onClick={handleDownload}>Baixar</button>
+            <button style={styles.secondaryBtn} onClick={() => setDismissed(true)}>Mais tarde</button>
+            <button style={styles.muteBtn} onClick={handleDisable}>Desativar atualizações automáticas</button>
           </div>
         </div>
       )}
 
       {state === 'downloading' && (
         <div style={styles.row}>
-          <span>Downloading update... {progress}%</span>
+          <span>Baixando atualização... {progress}%</span>
           <div style={styles.progressBar}>
             <div style={{ ...styles.progressFill, width: `${progress}%` }} />
           </div>
@@ -141,17 +141,17 @@ export function UpdateChecker() {
 
       {state === 'ready' && (
         <div style={styles.row}>
-          <span style={{ color: '#a6e3a1' }}>Update installed.</span>
+          <span style={{ color: '#a6e3a1' }}>Atualização instalada.</span>
           <div style={styles.actions}>
-            <button style={styles.successBtn} onClick={handleRelaunch}>Relaunch now</button>
-            <button style={styles.secondaryBtn} onClick={() => setDismissed(true)}>Later</button>
+            <button style={styles.successBtn} onClick={handleRelaunch}>Reiniciar agora</button>
+            <button style={styles.secondaryBtn} onClick={() => setDismissed(true)}>Mais tarde</button>
           </div>
         </div>
       )}
 
       {state === 'error' && (
         <div style={styles.row}>
-          <span style={{ color: '#f38ba8' }}>Update error: {errorMsg}</span>
+          <span style={{ color: '#f38ba8' }}>Erro de atualização: {errorMsg}</span>
         </div>
       )}
     </div>

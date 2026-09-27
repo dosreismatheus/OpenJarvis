@@ -135,10 +135,10 @@ export function SourcePicker({ onContinue }: { onContinue: (selectedIds: string[
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--color-text)' }}>
-          Connect your sources
+          Conecte suas fontes
         </h2>
         <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-          Choose which data sources to include in your personal knowledge base.
+          Escolha quais fontes de dados incluir na sua base de conhecimento pessoal.
         </p>
       </div>
 
@@ -169,7 +169,7 @@ export function SourcePicker({ onContinue }: { onContinue: (selectedIds: string[
           }}
         >
           {selected.size === 0
-            ? 'Select sources to continue'
+            ? 'Selecione as fontes para continuar'
             : `Connect ${selected.size} source${selected.size !== 1 ? 's' : ''}`}
         </button>
       </div>

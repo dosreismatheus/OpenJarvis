@@ -95,15 +95,15 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
   // ── Upload / Paste ─────────────────────────────────────────────────
   {
     connector_id: 'upload',
-    display_name: 'Upload / Paste',
+    display_name: "Enviar / colar",
     auth_type: 'filesystem',
     category: 'other',
     icon: 'FileUp',
     color: 'text-blue-400',
-    description: 'Paste text or upload documents',
-    unitLabel: 'documents',
+    description: "Cole texto ou envie documentos",
+    unitLabel: "documentos",
     steps: [
-      { label: 'Paste text or upload files (.txt, .md, .pdf, .docx, .csv) to add them to your knowledge base.' },
+      { label: "Cole texto ou envie arquivos (.txt, .md, .pdf, .docx, .csv) para adicioná-los à sua base de conhecimento." },
     ],
     inputFields: [],
   },
@@ -118,66 +118,66 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'communication',
     icon: 'Mail',
     color: 'text-red-400',
-    description: 'Email messages and threads',
-    unitLabel: 'emails',
+    description: "Mensagens e conversas de e-mail",
+    unitLabel: "e-mails",
     steps: [
       {
-        label: 'Make sure 2-Step Verification is enabled, then generate a 16-character App Password (Mail / Other / "OpenJarvis"). Paste it below \u2014 spaces are fine, and use the app password, not your regular Gmail password.',
+        label: "Ative a verificação em duas etapas e gere uma senha de aplicativo de 16 caracteres (Mail / Other / \"OpenJarvis\"). Cole-a abaixo; espaços são aceitos. Use a senha de aplicativo, não a senha comum do Gmail.",
         url: 'https://myaccount.google.com/apppasswords',
-        urlLabel: 'How to get an app password \u2192',
+        urlLabel: 'Como obter uma senha de aplicativo \u2192',
       },
     ],
     troubleshooting: [
-      "Don't see App Passwords? Make sure 2-Step Verification is enabled first.",
-      "Google Workspace user? Your admin may need to enable App Passwords for your organization.",
+      "Não encontra a opção de senha de aplicativo? Ative primeiro a verificação em duas etapas.",
+      "Usa Google Workspace? O administrador talvez precise permitir senhas de aplicativo na organização.",
     ],
     inputFields: [
       { name: 'email', placeholder: 'you@gmail.com', type: 'text' },
-      { name: 'password', placeholder: 'App password (xxxx xxxx xxxx xxxx)', type: 'password' },
+      { name: 'password', placeholder: "Senha do aplicativo (xxxx xxxx xxxx xxxx)", type: 'password' },
     ],
   },
   {
     connector_id: 'imap',
-    display_name: 'Email (IMAP)',
+    display_name: "E-mail (IMAP)",
     auth_type: 'oauth',
     category: 'communication',
     icon: 'Mail',
     color: 'text-amber-400',
-    description: 'Any IMAP mailbox',
-    unitLabel: 'emails',
+    description: "Qualquer caixa de e-mail IMAP",
+    unitLabel: "e-mails",
     steps: [
       {
-        label: 'Generate an app password with your email provider (IMAP must be enabled), then enter your email address and app password. Known providers are detected automatically; use the optional server settings for other providers.',
+        label: "Gere uma senha de aplicativo no seu provedor de e-mail, com IMAP ativado. Depois informe o endereço de e-mail e a senha de aplicativo. Provedores conhecidos são detectados automaticamente; para outros, use as configurações opcionais do servidor.",
       },
     ],
     troubleshooting: [
-      'Most providers require an app password rather than your normal password.',
-      'Use TLS for implicit TLS (usually port 993), or STARTTLS (usually port 143).',
-      'For security, private, loopback, link-local, and otherwise non-public server addresses are rejected.',
+      'A maioria dos provedores exige uma senha de aplicativo em vez da senha comum.',
+      'Use TLS na porta 993 ou STARTTLS na porta 143, conforme o provedor.',
+      'Por segurança, endereços de servidor privados ou locais não são aceitos.',
     ],
     inputFields: [
       { name: 'email', placeholder: 'you@example.com', type: 'text' },
-      { name: 'password', placeholder: 'App password', type: 'password' },
+      { name: 'password', placeholder: "Senha de aplicativo", type: 'password' },
       {
         name: 'host',
-        placeholder: 'IMAP host (optional; auto-detected)',
+        placeholder: "Host do IMAP (opcional; detectado automaticamente)",
         type: 'text',
         required: false,
       },
       {
         name: 'port',
-        placeholder: 'Port (optional; 993 or 143)',
+        placeholder: "Porta (opcional; 993 ou 143)",
         type: 'number',
         required: false,
       },
       {
         name: 'security',
-        placeholder: 'Connection security',
+        placeholder: "Segurança da conexão",
         type: 'select',
         defaultValue: 'tls',
         options: [
-          { value: 'tls', label: 'TLS (usually port 993)' },
-          { value: 'starttls', label: 'STARTTLS (usually port 143)' },
+          { value: 'tls', label: "TLS (geralmente porta 993)" },
+          { value: 'starttls', label: "STARTTLS (geralmente porta 143)" },
         ],
       },
     ],
@@ -189,30 +189,30 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'communication',
     icon: 'Hash',
     color: 'text-purple-400',
-    description: 'Read messages from every channel, private channel, DM, and group DM you have access to',
-    unitLabel: 'messages',
+    description: "Ler mensagens de todos os canais, canais privados e conversas diretas a que você tem acesso",
+    unitLabel: "mensagens",
     steps: [
       {
-        label: 'Go to api.slack.com/apps and click "Create New App" → choose "From scratch". Name it "OpenJarvis" and pick your workspace',
+        label: "Vá até api.slack.com/apps e clique em \"Create New App\" → escolha \"From scratch\". Dê o nome \"OpenJarvis\" e selecione seu workspace",
         url: 'https://api.slack.com/apps',
-        urlLabel: 'Open Slack Apps',
+        urlLabel: 'Abrir aplicativos do Slack',
       },
       {
-        label: 'In the left sidebar, click "OAuth & Permissions". Scroll down to "User Token Scopes" (NOT "Bot Token Scopes"). Click "Add an OAuth Scope" and add EACH of these scopes one by one:',
+        label: "Na barra lateral esquerda, clique em \"OAuth & Permissions\". Desça até \"User Token Scopes\" (NÃO \"Bot Token Scopes\"). Clique em \"Add an OAuth Scope\" e adicione cada um desses escopos um por um:",
       },
       {
         label: 'channels:history • channels:read • groups:history • groups:read • im:history • im:read • mpim:history • mpim:read • users:read',
       },
       {
-        label: 'In the left sidebar, click "Install App" → click "Install to Workspace" → click "Allow". After installing, copy the "User OAuth Token" that appears (starts with xoxp-, NOT xoxb-)',
+        label: "Na barra lateral esquerda, clique em \"Install App\" → clique em \"Install to Workspace\" → clique em \"Allow\". Após a instalação, copie o \"User OAuth Token\" que aparece (começa com xoxp-, NÃO com xoxb-)",
       },
       {
-        label: 'Paste the user token below. Sync indexes every channel, private channel, DM, and group DM you have access to — no need to invite anything to channels',
+        label: "Cole o token do usuário abaixo. Sincronize os índices de todos os canais, canais privados, DMs e DMs de grupos que você tem acesso — não é necessário convidar ninguém para os canais",
       },
       {
-        label: '(Optional) Set the app icon: in the left sidebar click "Basic Information" → scroll to "Display Information" → upload the OpenJarvis logo',
+        label: "(Opcional) Defina o ícone da aplicação: na barra lateral esquerda clique em \"Basic Information\" → deslize até \"Display Information\" → suba o logotipo OpenJarvis",
         url: 'https://github.com/open-jarvis/OpenJarvis/blob/main/assets/openjarvis-slack-icon.jpg',
-        urlLabel: 'Download icon',
+        urlLabel: 'Baixar ícone',
       },
     ],
     inputFields: [
@@ -226,22 +226,22 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'documents',
     icon: 'FileText',
     color: 'text-gray-300',
-    description: 'Pages and databases',
-    unitLabel: 'pages',
+    description: "Páginas e bancos de dados",
+    unitLabel: "páginas",
     steps: [
       {
-        label: 'Go to notion.so/profile/integrations → click "+ New integration". Name it "OpenJarvis", select your workspace, and click Submit',
+        label: "Acesse notion.so/profile/integrations → clique em \"+ New integration\". Nomeie-o \"OpenJarvis\", selecione seu workspace e clique em Submit",
         url: 'https://www.notion.so/profile/integrations',
-        urlLabel: 'Open Notion Integrations',
+        urlLabel: 'Abrir integrações do Notion',
       },
       {
-        label: 'Copy the "Internal Integration Secret" (starts with ntn_) and paste it below',
+        label: "Copie o \"Internal Integration Secret\" (começa por ntn_) e cole abaixo",
       },
       {
-        label: 'To share ALL your pages at once: open any top-level page → click "..." (top right) → "Connections" → "Add connections" → search "OpenJarvis" → click it. This shares the page and all its sub-pages. Repeat for each top-level page, or share your entire workspace by doing this on every root page',
+        label: "Para compartilhar todas as suas páginas de uma vez: abra qualquer página do nível superior → clique em \"...\" (canto superior direito) → \"Connections\" → \"Add connections\" → procure por \"OpenJarvis\" → clique nele. Isso compartilha a página e todas as suas sub-páginas. Repita para cada página do nível superior, ou compartilhe todo o seu workspace fazendo isso em cada página raiz.",
       },
       {
-        label: 'Tip: if you have a single top-level page that contains everything, sharing just that one page will share all nested sub-pages automatically',
+        label: "Dica: se você tiver apenas uma página do nível superior que contém tudo, compartilhar apenas essa página compartilhará automaticamente todas as sub-páginas aninhadas.",
       },
     ],
     inputFields: [
@@ -255,11 +255,11 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'documents',
     icon: 'Mic',
     color: 'text-amber-400',
-    description: 'AI meeting notes',
-    unitLabel: 'meeting notes',
+    description: "Notas de reuniões com IA",
+    unitLabel: "notas de reunião",
     steps: [
-      { label: 'Open the Granola desktop app. Click the gear icon (Settings) in the bottom-left corner, then click "API"' },
-      { label: 'Click "Generate API Key" (or copy your existing key). Paste the key below' },
+      { label: "Abra a aplicação desktop Granola. Clique no ícone de engrenagem (Configurações) na parte inferior-esquerda, depois clique em \"API\"." },
+      { label: "Clique em \"Generate API Key\" (ou copie sua chave existente). Cole a chave abaixo." },
     ],
     inputFields: [
       { name: 'token', placeholder: 'grn_...', type: 'password' },
@@ -272,17 +272,17 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'communication',
     icon: 'MessageSquare',
     color: 'text-green-400',
-    description: 'macOS Messages history',
-    unitLabel: 'messages',
+    description: "Histórico do Mensagens no macOS",
+    unitLabel: "mensagens",
     steps: [
       {
-        label: 'Open the Apple menu () → System Settings → Privacy & Security (in the left sidebar) → scroll down and click "Full Disk Access"',
+        label: "Abra o menu Apple () → Configurações do Sistema → Privacidade e Segurança (na barra lateral à esquerda) → deslize para baixo e clique em \"Full Disk Access\"",
       },
       {
-        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "OpenJarvis.app" from Applications',
+        label: "Clique no botão \"+\" no final da lista. Navegue até Aplicações → Utilitários → selecione \"Terminal.app\" (ou iTerm2/Warp se estiver usando esses). Se estiver usando a aplicação desktop, também adicione \"OpenJarvis.app\" do Aplicações",
       },
       {
-        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart OpenJarvis). iMessage data will be detected automatically — no credentials needed',
+        label: "Alternar o interruptor ON ao lado de cada aplicativo adicionado. Fechar e abrir seu terminal (ou reiniciar o OpenJarvis). Os dados do iMessage serão detectados automaticamente — não são necessários credenciais",
       },
     ],
   },
@@ -294,17 +294,17 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'documents',
     icon: 'FolderOpen',
     color: 'text-purple-300',
-    description: 'Markdown vault',
-    unitLabel: 'notes',
+    description: "Cofre de notas Markdown",
+    unitLabel: "notas",
     steps: [
       {
-        label: 'Find your vault path: open Obsidian → click the vault name in the bottom-left corner → "Manage Vaults" → look at the path shown under your vault name. On macOS this is usually ~/Documents/MyVault or ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyVault',
+        label: "Encontre o caminho do seu vault: abra Obsidian → clique no nome do vault na parte inferior-esquerda → \"Manage Vaults\" → veja o caminho mostrado abaixo do nome do seu vault. No macOS, geralmente é ~/Documents/MyVault ou ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyVault",
       },
       {
-        label: 'Alternatively, open Finder → navigate to your vault folder (it contains a hidden .obsidian directory). Right-click the folder → "Copy as Pathname" to get the full path',
+        label: "Alternativamente, abra o Finder → navegue até a pasta do seu vault (que contém uma pasta oculta chamada .obsidian). Clique com o botão direito na pasta → \"Copy as Pathname\" para obter o caminho completo",
       },
       {
-        label: 'Paste the full path below. OpenJarvis will index all .md files in the vault',
+        label: "Cole o caminho completo abaixo. O OpenJarvis indexará todos os arquivos .md no vault",
       },
     ],
     inputFields: [
@@ -318,61 +318,61 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'documents',
     icon: 'FolderOpen',
     color: 'text-blue-400',
-    description: 'Docs, Sheets, and files',
-    unitLabel: 'files',
+    description: "Documentos, planilhas e arquivos",
+    unitLabel: "arquivos",
     steps: [
       {
-        label: 'Go to Google Cloud Console → create a new project (or select an existing one). Give it any name (e.g. "OpenJarvis")',
+        label: "Acesse o Google Cloud Console e crie um projeto ou selecione um existente. Dê a ele qualquer nome, como \"OpenJarvis\".",
         url: 'https://console.cloud.google.com/projectcreate',
-        urlLabel: 'Create Project',
+        urlLabel: 'Criar projeto',
       },
       {
-        label: 'Enable the Google Drive API: click the link below, make sure your project is selected at the top, then click "Enable"',
+        label: "Habilitar a API do Google Drive: clique no link abaixo, certifique-se de que seu projeto está selecionado na parte superior e depois clique em \"Enable\"",
         url: 'https://console.cloud.google.com/apis/library/drive.googleapis.com',
-        urlLabel: 'Enable Drive API',
+        urlLabel: 'Ativar API do Drive',
       },
       {
-        label: 'Create OAuth credentials: go to Credentials (link below) → click "+ Create Credentials" → choose "OAuth client ID" → Application type: "Web application". Under "Authorized redirect URIs" add this server\'s callback (e.g. http://localhost:1313/v1/connectors/gdrive/oauth/callback — match the host/port your OpenJarvis server is bound to) → click "Create".',
+        label: "Criar credenciais OAuth: vá para Credenciais (link abaixo) → clique em \"+ Create Credentials\" → escolha \"OAuth client ID\" → Tipo de aplicação: \"Web application\". Na seção \"Authorized redirect URIs\", adicione este callback do servidor do seu OpenJarvis (ex. http://localhost:1313/v1/connectors/gdrive/oauth/callback — ajuste para o host/port que o seu servidor OpenJarvis está bound) → clique em \"Create\".",
         url: 'https://console.cloud.google.com/apis/credentials',
-        urlLabel: 'Open Credentials',
+        urlLabel: 'Abrir credenciais',
       },
       {
-        label: 'A dialog will show your Client ID and Client Secret. Copy both and paste them below, then click Connect — a Google sign-in window opens to finish authorization. (If you miss the dialog, click the download icon next to your OAuth client to see them again.)',
+        label: "Uma janela de diálogo mostrará seu Client ID e Client Secret. Copie ambos e cole abaixo, depois clique em Conectar — uma janela de login do Google abrirá para finalizar a autorização. (Se você perder a janela de diálogo, clique no ícone de download ao lado do seu OAuth client para vê-los novamente.)",
       },
     ],
     inputFields: [
-      { name: 'email', placeholder: 'Client ID (e.g. 123456-abc.apps.googleusercontent.com)', type: 'text' },
+      { name: 'email', placeholder: "Client ID (ex. 123456-abc.apps.googleusercontent.com)", type: 'text' },
       { name: 'password', placeholder: 'Client Secret', type: 'password' },
     ],
   },
   // ── PIM (Calendar, Contacts) ───────────────────────────────────────
   {
     connector_id: 'gcalendar',
-    display_name: 'Google Calendar',
+    display_name: "Google Agenda",
     auth_type: 'oauth',
     category: 'pim',
     icon: 'Calendar',
     color: 'text-blue-400',
-    description: 'Events and meetings',
-    unitLabel: 'events',
+    description: "Eventos e reuniões",
+    unitLabel: "eventos",
     steps: [
       {
-        label: 'Go to Google Cloud Console → use the same project as Google Drive (or create a new one)',
+        label: "Vá para o Console do Google Cloud → use o mesmo projeto que o Google Drive (ou crie um novo)",
         url: 'https://console.cloud.google.com/projectcreate',
-        urlLabel: 'Open Console',
+        urlLabel: 'Abrir console',
       },
       {
-        label: 'Enable the Google Calendar API: click the link below, select your project, then click "Enable"',
+        label: "Habilitar a API do Google Agenda: clique no link abaixo, selecione seu projeto e depois clique em \"Enable\"",
         url: 'https://console.cloud.google.com/apis/library/calendar-json.googleapis.com',
-        urlLabel: 'Enable Calendar API',
+        urlLabel: 'Ativar API do Google Agenda',
       },
       {
-        label: 'Go to Credentials → "+ Create Credentials" → "OAuth client ID" → Application type: "Desktop app" → "Create". Copy the Client ID and Client Secret',
+        label: "Vá até Credenciais → \"+ Create Credentials\" (+) → \"OAuth client ID\" → Tipo de aplicativo: \"Desktop app\" → \"Create\". Copie o Client ID e o Client Secret",
         url: 'https://console.cloud.google.com/apis/credentials',
-        urlLabel: 'Open Credentials',
+        urlLabel: 'Abrir credenciais',
       },
       {
-        label: 'Paste the Client ID and Client Secret below (you can reuse the same OAuth client as Google Drive if you enabled both APIs in the same project)',
+        label: "Cole abaixo o Client ID e o Client Secret (pode reutilizar o mesmo OAuth client se ambos os APIs foram habilitados no mesmo projeto)",
       },
     ],
     inputFields: [
@@ -387,26 +387,26 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'pim',
     icon: 'Users',
     color: 'text-blue-400',
-    description: 'People and contact info',
-    unitLabel: 'contacts',
+    description: "Pessoas e informações de contato",
+    unitLabel: "contatos",
     steps: [
       {
-        label: 'Go to Google Cloud Console → use the same project as Google Drive (or create a new one)',
+        label: "Vá para o Console do Google Cloud → use o mesmo projeto que o Google Drive (ou crie um novo)",
         url: 'https://console.cloud.google.com/projectcreate',
-        urlLabel: 'Open Console',
+        urlLabel: 'Abrir console',
       },
       {
-        label: 'Enable the People API: click the link below, select your project, then click "Enable"',
+        label: "Habilitar a API da People: clique no link abaixo, selecione seu projeto e depois clique em \"Enable\"",
         url: 'https://console.cloud.google.com/apis/library/people.googleapis.com',
-        urlLabel: 'Enable People API',
+        urlLabel: 'Ativar API de contatos',
       },
       {
-        label: 'Go to Credentials → "+ Create Credentials" → "OAuth client ID" → Application type: "Desktop app" → "Create". Copy the Client ID and Client Secret',
+        label: "Vá até Credenciais → \"+ Create Credentials\" (+) → \"OAuth client ID\" → Tipo de aplicativo: \"Desktop app\" → \"Create\". Copie o Client ID e o Client Secret",
         url: 'https://console.cloud.google.com/apis/credentials',
-        urlLabel: 'Open Credentials',
+        urlLabel: 'Abrir credenciais',
       },
       {
-        label: 'Paste the Client ID and Client Secret below',
+        label: "Cole o Client ID e o Client Secret abaixo",
       },
     ],
     inputFields: [
@@ -421,17 +421,17 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'documents',
     icon: 'FileText',
     color: 'text-yellow-400',
-    description: 'macOS Notes app',
-    unitLabel: 'notes',
+    description: "App Notas do macOS",
+    unitLabel: "notas",
     steps: [
       {
-        label: 'Open the Apple menu () → System Settings → Privacy & Security (in the left sidebar) → scroll down and click "Full Disk Access"',
+        label: "Abra o menu Apple () → Configurações do Sistema → Privacidade e Segurança (na barra lateral à esquerda) → deslize para baixo e clique em \"Full Disk Access\"",
       },
       {
-        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "OpenJarvis.app" from Applications',
+        label: "Clique no botão \"+\" no final da lista. Navegue até Aplicações → Utilitários → selecione \"Terminal.app\" (ou iTerm2/Warp se estiver usando esses). Se estiver usando a aplicação desktop, também adicione \"OpenJarvis.app\" do Aplicações",
       },
       {
-        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart OpenJarvis). Apple Notes will be detected automatically — no credentials needed',
+        label: "Ative o interruptor ao lado de cada aplicativo adicionado. Feche e abra seu terminal (ou reinicie o OpenJarvis). O Apple Notes será detectado automaticamente — não são necessárias credenciais.",
       },
     ],
   },
@@ -442,17 +442,17 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'pim',
     icon: 'Users',
     color: 'text-orange-400',
-    description: 'macOS Contacts app',
-    unitLabel: 'contacts',
+    description: "App de Contatos do macOS",
+    unitLabel: "contatos",
     steps: [
       {
-        label: 'Open the Apple menu () → System Settings → Privacy & Security (in the left sidebar) → scroll down and click "Full Disk Access"',
+        label: "Abra o menu Apple () → Configurações do Sistema → Privacidade e Segurança (na barra lateral à esquerda) → deslize para baixo e clique em \"Full Disk Access\"",
       },
       {
-        label: 'Click the "+" button at the bottom of the list. Navigate to Applications → Utilities → select "Terminal.app" (or iTerm2/Warp if you use those). If you\'re using the desktop app, also add "OpenJarvis.app" from Applications',
+        label: "Clique no botão \"+\" no final da lista. Navegue até Aplicações → Utilitários → selecione \"Terminal.app\" (ou iTerm2/Warp se estiver usando esses). Se estiver usando a aplicação desktop, também adicione \"OpenJarvis.app\" do Aplicações",
       },
       {
-        label: 'Toggle the switch ON next to each app you added. Close and reopen your terminal (or restart OpenJarvis). Apple Contacts will be detected automatically — no credentials needed',
+        label: "Ative o interruptor ao lado de cada aplicativo adicionado. Feche e abra seu terminal (ou reinicie o OpenJarvis). O Apple Contacts será detectado automaticamente — não são necessárias credenciais.",
       },
     ],
   },
@@ -463,22 +463,22 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'communication',
     icon: 'Mail',
     color: 'text-blue-400',
-    description: 'Microsoft email and calendar',
-    unitLabel: 'emails',
+    description: "E-mail e calendário da Microsoft",
+    unitLabel: "e-mails",
     steps: [
       {
-        label: 'Go to the Azure Portal → App Registrations → click "+ New registration". Name it "OpenJarvis", select "Accounts in this organizational directory only", and click Register',
+        label: "Vá para o Azure Portal → App Registrations → clique em \"+ New registration\". Nomeie-o \"OpenJarvis\", selecione \"Accounts in this organizational directory only\" e clique em Register",
         url: 'https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade',
-        urlLabel: 'Open Azure App Registrations',
+        urlLabel: 'Abrir registros de aplicativos do Azure',
       },
       {
-        label: 'In the left sidebar, click "API Permissions" → "Add a permission" → "Microsoft Graph" → "Delegated permissions" → search and check "Mail.Read" → click "Add permissions"',
+        label: "Na barra lateral esquerda, clique em \"API Permissions\" → \"Add a permission\" → \"Microsoft Graph\" → \"Delegated permissions\" → procure por \"Mail.Read\" → clique em \"Add permissions\"",
       },
       {
-        label: 'In the left sidebar, click "Certificates & secrets" → "New client secret" → set a description and expiry → click "Add" → immediately copy the "Value" (you won\'t see it again)',
+        label: "Na barra lateral esquerda, clique em \"Certificates & secrets\" → \"New client secret\" → defina uma descrição e uma data de expiração → clique em \"Add\" → copie imediatamente o \"Value\" (não será mais visível)",
       },
       {
-        label: 'Go to "Overview" in the left sidebar and copy the "Application (client) ID". Paste both the Client ID and the Client Secret below',
+        label: "Vá para \"Overview\" na barra lateral esquerda e copie o \"Application (client) ID\". Cole abaixo tanto o Client ID quanto o Client Secret",
       },
     ],
     inputFields: [
@@ -493,23 +493,23 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'documents',
     icon: 'FolderOpen',
     color: 'text-blue-300',
-    description: 'Cloud file storage',
-    unitLabel: 'files',
+    description: "Armazenamento de arquivos na nuvem",
+    unitLabel: "arquivos",
     steps: [
       {
-        label: 'Go to the Dropbox App Console and click "Create app". Choose "Scoped access" → "Full Dropbox" → give it a name (e.g. "OpenJarvis") → click "Create app"',
+        label: "Acesse o Dropbox App Console e clique em \"Create app\". Escolha \"Scoped access\" → \"Full Dropbox\", dê um nome como \"OpenJarvis\" e clique em \"Create app\".",
         url: 'https://www.dropbox.com/developers/apps/create',
-        urlLabel: 'Open Dropbox App Console',
+        urlLabel: 'Abrir console de aplicativos do Dropbox',
       },
       {
-        label: 'Click the "Permissions" tab at the top. Check "files.metadata.read" and "files.content.read" → click "Submit" at the bottom to save',
+        label: "Abra a aba \"Permissions\". Marque \"files.metadata.read\" e \"files.content.read\" e clique em \"Submit\" para salvar.",
       },
       {
-        label: 'Go back to the "Settings" tab. Under "OAuth 2", find "Generated access token" and click "Generate". Copy the token and paste it below',
+        label: "Volte à aba \"Settings\". Em \"OAuth 2\", localize \"Generated access token\" e clique em \"Generate\". Copie o token e cole-o abaixo.",
       },
     ],
     inputFields: [
-      { name: 'token', placeholder: 'Access token (sl.u...)', type: 'password' },
+      { name: 'token', placeholder: "Token de acesso (sl.u...)", type: 'password' },
     ],
   },
   {
@@ -519,23 +519,23 @@ export const SOURCE_CATALOG: ConnectorMeta[] = [
     category: 'communication',
     icon: 'MessageSquare',
     color: 'text-green-400',
-    description: 'WhatsApp messages (Meta Cloud API)',
-    unitLabel: 'messages',
+    description: "Mensagens do WhatsApp (API da Meta Cloud)",
+    unitLabel: "mensagens",
     steps: [
       {
-        label: 'Go to Meta for Developers → click "Create App" → choose "Business" type → fill in your app details and click "Create App"',
+        label: "Vá para Meta for Developers → clique em \"Create App\" → selecione o tipo \"Business\" → preencha os detalhes do seu aplicativo e clique em \"Create App\"",
         url: 'https://developers.facebook.com/apps/',
-        urlLabel: 'Open Meta Developer Portal',
+        urlLabel: 'Abrir portal de desenvolvedores da Meta',
       },
       {
-        label: 'On the app dashboard, find "WhatsApp" and click "Set up". Follow the prompts to add a WhatsApp test number. Go to "API Setup" and copy the temporary access token',
+        label: "No painel do aplicativo, procure por \"WhatsApp\" e clique em \"Set up\". Siga as instruções para adicionar um número de teste do WhatsApp. Vá até \"API Setup\" e copie o token de acesso temporário",
       },
       {
-        label: 'Copy your "Phone Number ID" (shown on the API Setup page) and the access token. Paste them below separated by a colon — e.g. 123456789:EAABx...',
+        label: "Copie o \"Phone Number ID\" exibido na página API Setup e o token de acesso. Cole-os abaixo separados por dois-pontos, por exemplo: 123456789:EAABx...",
       },
     ],
     inputFields: [
-      { name: 'token', placeholder: 'Phone Number ID:Access Token', type: 'password' },
+      { name: 'token', placeholder: 'ID do número:token de acesso', type: 'password' },
     ],
   },
 ];

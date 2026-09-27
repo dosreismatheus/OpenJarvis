@@ -264,13 +264,13 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
     return (
       <div style={styles.container}>
         <div style={styles.header}>
-          <h2 style={styles.title}>Energy Monitor</h2>
+          <h2 style={styles.title}>Monitor de Energia</h2>
         </div>
         <div style={styles.emptyState}>
           <div style={styles.emptyIcon}>&#x26A1;</div>
           <div style={styles.emptyText}>
-            No energy data available.<br />
-            Ensure an energy monitor backend (NVIDIA, AMD, Apple, or RAPL) is configured.
+            Nenhum dado de energia disponível.<br />
+            Garanta que um monitor de energia (NVIDIA, AMD, Apple ou RAPL) esteja configurado.
           </div>
         </div>
       </div>
@@ -291,10 +291,10 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
 
       {/* Header */}
       <div style={styles.header}>
-        <h2 style={styles.title}>Energy Monitor</h2>
+        <h2 style={styles.title}>Monitor de Energia</h2>
         <span style={styles.liveBadge}>
           <span style={styles.liveDot} />
-          Live - {REFRESH_INTERVAL_MS / 1000}s
+          Ao vivo · {REFRESH_INTERVAL_MS / 1000}s
         </span>
       </div>
 
@@ -304,7 +304,7 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
       {/* Summary cards */}
       <div style={styles.statsGrid}>
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Total Energy</div>
+          <div style={styles.statLabel}>Energia Total</div>
           <div style={styles.statValue}>
             {energyData?.total_energy_j !== undefined
               ? formatEnergy(energyData.total_energy_j)
@@ -313,7 +313,7 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
         </div>
 
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Energy per Token</div>
+          <div style={styles.statLabel}>Energia por Token</div>
           <div style={styles.statValue}>
             {energyData?.energy_per_token_j !== undefined ? (
               <>
@@ -327,7 +327,7 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
         </div>
 
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Avg Power Draw</div>
+          <div style={styles.statLabel}>Potência média</div>
           <div style={styles.statValue}>
             {energyData?.avg_power_w !== undefined ? (
               <>
@@ -341,7 +341,7 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
         </div>
 
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Thermal Status</div>
+          <div style={styles.statLabel}>Status Térmico</div>
           <div style={{ ...styles.thermalStatus, color: thermal.color }}>
             {thermal.label}
           </div>
@@ -349,14 +349,14 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
 
         {telemetry?.total_requests !== undefined && (
           <div style={styles.statCard}>
-            <div style={styles.statLabel}>Total Requests</div>
+            <div style={styles.statLabel}>Solicitações Totais</div>
             <div style={styles.statValue}>{telemetry.total_requests.toLocaleString()}</div>
           </div>
         )}
 
         {telemetry?.total_tokens !== undefined && (
           <div style={styles.statCard}>
-            <div style={styles.statLabel}>Total Tokens</div>
+            <div style={styles.statLabel}>Total de Tokens</div>
             <div style={styles.statValue}>{telemetry.total_tokens.toLocaleString()}</div>
           </div>
         )}
@@ -365,7 +365,7 @@ export function EnergyDashboard({ apiUrl }: { apiUrl: string }) {
       {/* Power chart */}
       {chartData.length > 0 && (
         <div style={styles.chartContainer}>
-          <div style={styles.chartTitle}>Power Draw Over Time (W)</div>
+          <div style={styles.chartTitle}>Consumo ao longo do tempo (W)</div>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={chartData} margin={{ top: 4, right: 20, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />

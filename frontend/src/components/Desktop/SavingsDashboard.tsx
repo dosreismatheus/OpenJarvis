@@ -379,13 +379,13 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
     return (
       <div style={styles.container}>
         <div style={styles.header}>
-          <h2 style={styles.title}>Savings Dashboard</h2>
+          <h2 style={styles.title}>Painel de economia</h2>
         </div>
         <div style={styles.emptyState}>
           <div style={{ fontSize: 40, opacity: 0.4 }}>$</div>
           <div style={styles.emptyText}>
-            No savings data available.<br />
-            Start making inference requests to see savings vs cloud providers.
+            Nenhum dado de economia disponível.<br />
+            Inicie solicitações de inferência para ver a economia comparada com provedores da nuvem.
           </div>
         </div>
       </div>
@@ -407,10 +407,10 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
 
       {/* Header */}
       <div style={styles.header}>
-        <h2 style={styles.title}>Savings Dashboard</h2>
+        <h2 style={styles.title}>Painel de economia</h2>
         <span style={styles.liveBadge}>
           <span style={styles.liveDot} />
-          Live - {REFRESH_INTERVAL_MS / 1000}s
+          Ao vivo · {REFRESH_INTERVAL_MS / 1000}s
         </span>
       </div>
 
@@ -420,10 +420,10 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
       {showOptIn ? (
         <div style={{ ...styles.statCard, marginBottom: 24, padding: 20 }}>
           <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8, color: colors.text }}>
-            Share Your Savings
+            Compartilhe sua Economia
           </div>
           <div style={{ fontSize: 13, color: colors.textMuted, marginBottom: 14, lineHeight: 1.5 }}>
-            Opt in to privately share your savings for the chance to win a Mac Mini!
+            Compartilhe seus dados de economia de forma privada para concorrer a um Mac Mini!
           </div>
           <div style={{ marginBottom: 8 }}>
             <input
@@ -431,7 +431,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
               value={nameInput}
               onChange={(e) => { setNameInput(e.target.value); setNameError(''); }}
               onKeyDown={(e) => { if (e.key === 'Enter') handleOptInJoin(); }}
-              placeholder="Display name for leaderboard"
+              placeholder="Nome exibido na tabela de classificação"
               maxLength={30}
               style={{
                 width: '100%',
@@ -449,14 +449,14 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
           <div style={{ marginBottom: 10 }}>
             <div style={{ fontSize: 12, color: colors.textMuted, marginBottom: 4 }}>
               Email <span style={{ color: colors.red }}>*</span>
-              <span style={{ fontWeight: 400, marginLeft: 4, opacity: 0.7 }}>(never shown publicly)</span>
+              <span style={{ fontWeight: 400, marginLeft: 4, opacity: 0.7 }}>(nunca mostrado publicamente)</span>
             </div>
             <input
               type="email"
               value={emailInput}
               onChange={(e) => { setEmailInput(e.target.value); setNameError(''); }}
               onKeyDown={(e) => { if (e.key === 'Enter') handleOptInJoin(); }}
-              placeholder="your@email.com"
+              placeholder="seu@email.com"
               style={{
                 width: '100%',
                 padding: '8px 12px',
@@ -487,7 +487,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
                 cursor: 'pointer',
               }}
             >
-              Join Leaderboard
+              Participar do ranking
             </button>
             <button
               onClick={() => setShowOptIn(false)}
@@ -501,7 +501,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
                 cursor: 'pointer',
               }}
             >
-              Cancel
+              Cancelar
             </button>
             {optInEnabled && (
               <button
@@ -517,7 +517,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
                   marginLeft: 'auto',
                 }}
               >
-                Opt Out
+                Sair do ranking
               </button>
             )}
           </div>
@@ -548,7 +548,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
             rel="noopener noreferrer"
             style={{ fontSize: 12, color: colors.accent, textDecoration: 'none' }}
           >
-            View Leaderboard ↗
+            Ver Tabela de Classificação ↗
           </a>
         </div>
       )}
@@ -556,25 +556,25 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
       {/* Stat cards row */}
       <div style={styles.statsGrid}>
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Total Requests</div>
+          <div style={styles.statLabel}>Solicitações Totais</div>
           <div style={styles.statValue}>
             {(data?.total_calls ?? 0).toLocaleString()}
           </div>
         </div>
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Total Tokens</div>
+          <div style={styles.statLabel}>Total de Tokens</div>
           <div style={styles.statValue}>
             {(data?.total_tokens ?? 0).toLocaleString()}
           </div>
         </div>
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Session Duration</div>
+          <div style={styles.statLabel}>Duração da Sessão</div>
           <div style={styles.statValue}>
             {fmtDuration(data?.session_duration_hours ?? 0)}
           </div>
         </div>
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Local Cost</div>
+          <div style={styles.statLabel}>Custo Local</div>
           <div style={{ ...styles.statValue, color: colors.green }}>
             {fmtDollar(data?.local_cost ?? 0)}
           </div>
@@ -582,7 +582,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
       </div>
 
       {/* Provider savings cards */}
-      <div style={styles.sectionHeading}>Savings vs Cloud Providers*</div>
+      <div style={styles.sectionHeading}>Economia vs Provedores da Nuvem*</div>
       <div style={styles.providersGrid}>
         {providers.map((p) => (
           <div
@@ -597,11 +597,11 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
             <div style={styles.savingsAmount}>{fmtDollar(p.total_cost)}</div>
             <div style={styles.breakdown}>
               <div>
-                <div style={styles.breakdownLabel}>Input Saved</div>
+                <div style={styles.breakdownLabel}>Economia na entrada</div>
                 <div style={styles.breakdownValue}>{fmtDollar(p.input_cost)}</div>
               </div>
               <div>
-                <div style={styles.breakdownLabel}>Output Saved</div>
+                <div style={styles.breakdownLabel}>Economia na saída</div>
                 <div style={styles.breakdownValue}>{fmtDollar(p.output_cost)}</div>
               </div>
             </div>
@@ -610,36 +610,36 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
       </div>
 
       <div style={{ fontSize: 11, color: colors.textMuted, marginTop: 8, lineHeight: 1.5 }}>
-        *Savings estimates assume local models (e.g. Qwen, Nemotron, Kimi) produce roughly the same number of tokens per request, on average, as closed-source cloud models.
+        *Estimativas de economia assumem que modelos locais (ex. Qwen, Nemotron, Kimi) produzem aproximadamente o mesmo número de tokens por solicitação, em média, como modelos fechados na nuvem.
       </div>
 
       {/* Cloud Agent Platforms */}
       {cloudAgent && (
         <>
-          <div style={styles.sectionHeading}>vs Cloud Agent Platforms</div>
+          <div style={styles.sectionHeading}>vs Plataformas de Agentes da Nuvem</div>
           <div style={styles.cloudAgentCard}>
-            <div style={styles.providerName}>Typical Cloud Agent Platform</div>
-            <div style={styles.providerModel}>based on published API pricing tiers</div>
+            <div style={styles.providerName}>Plataforma de Agentes da Nuvem Típica</div>
+            <div style={styles.providerModel}>com base nos preços públicos das APIs</div>
             <div style={styles.cloudAgentGrid}>
               <div>
-                <div style={styles.breakdownLabel}>MODERATE USE</div>
+                <div style={styles.breakdownLabel}>USE MODERADO</div>
                 <div style={{ ...styles.breakdownValue, color: colors.yellow, fontSize: 20 }}>
                   ${cloudAgent.moderate_low}&ndash;{cloudAgent.moderate_high}/mo
                 </div>
               </div>
               <div>
-                <div style={styles.breakdownLabel}>HEAVY USE</div>
+                <div style={styles.breakdownLabel}>USO INTENSO</div>
                 <div style={{ ...styles.breakdownValue, color: colors.red, fontSize: 20 }}>
                   ${cloudAgent.heavy_low}&ndash;{cloudAgent.heavy_high}+/mo
                 </div>
               </div>
               <div>
-                <div style={styles.breakdownLabel}>YOUR COST</div>
+                <div style={styles.breakdownLabel}>SEU CUSTO</div>
                 <div style={{ ...styles.breakdownValue, color: colors.green, fontSize: 24 }}>
                   $0.00
                 </div>
                 <div style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>
-                  local inference
+                  inferência local
                 </div>
               </div>
             </div>
@@ -648,7 +648,7 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
       )}
 
       {/* Monthly Projection */}
-      <div style={styles.sectionHeading}>Monthly Projection</div>
+      <div style={styles.sectionHeading}>Projeção Mensal</div>
       <div style={styles.providersGrid}>
         {providers.map((p) => (
           <div
@@ -659,12 +659,12 @@ export function SavingsDashboard({ apiUrl }: { apiUrl: string }) {
             }}
           >
             <div style={styles.providerName}>vs {p.label}</div>
-            <div style={styles.providerModel}>projected monthly savings</div>
+            <div style={styles.providerModel}>ganhos mensais projetados</div>
             <div style={styles.savingsAmount}>
               {fmtDollar(projection[p.provider] ?? 0)}
             </div>
             <div style={{ fontSize: 12, color: colors.textMuted }}>
-              per month at current rate
+              por mês no valor atual
             </div>
           </div>
         ))}

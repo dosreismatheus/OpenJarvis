@@ -13,10 +13,10 @@ function getStarterQueries(connectedSources: string[]): string[] {
     queries.push('What emails need my attention today?');
   }
   if (has('gcalendar')) {
-    queries.push("What's on my calendar this week?");
+    queries.push('O que tenho no calendário nesta semana?');
   }
   if (has('slack')) {
-    queries.push('Summarize important Slack messages from yesterday');
+    queries.push('Resuma as mensagens importantes do Slack de ontem');
   }
   if (has('gdrive') || has('notion') || has('obsidian')) {
     queries.push('Find my notes about project planning');
@@ -25,7 +25,7 @@ function getStarterQueries(connectedSources: string[]): string[] {
     queries.push('What have I been texting about lately?');
   }
   if (has('gcontacts')) {
-    queries.push('Who are my most frequent collaborators?');
+    queries.push('Com quem mais colaboro?');
   }
   if (has('granola')) {
     queries.push('Summarize my recent meeting notes');
@@ -108,13 +108,13 @@ export function ReadyScreen({
       {/* Headline */}
       <div>
         <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-          You're all set!
+          Pronto!
         </h2>
         <p className="text-sm max-w-sm" style={{ color: 'var(--color-text-secondary)' }}>
           {connectedCards.length > 0
             ? `Connected ${connectedCards.length} source${connectedCards.length !== 1 ? 's' : ''}: ${connectedCards.map((c) => c!.display_name).join(', ')}.`
-            : 'Your personal AI is ready to help.'}
-          {' '}Ask anything about your work and life.
+            : 'Sua IA pessoal está pronta para ajudar.'}
+          {' '}Pergunte sobre seu trabalho e vida.
         </p>
       </div>
 
@@ -122,7 +122,7 @@ export function ReadyScreen({
       <div className="w-full max-w-sm flex flex-col gap-2">
         <p className="text-xs font-semibold uppercase tracking-wider mb-1 text-left"
           style={{ color: 'var(--color-text-tertiary)' }}>
-          Try asking
+          Tente perguntar
         </p>
         {starters.map((q) => (
           <StarterCard key={q} query={q} onSelect={onStart} />
@@ -135,7 +135,7 @@ export function ReadyScreen({
         className="px-8 py-3 rounded-xl font-semibold text-sm transition-all"
         style={{ background: 'var(--color-accent)', color: 'var(--color-on-accent)' }}
       >
-        Open Chat
+        Abrir Chat
       </button>
     </div>
   );

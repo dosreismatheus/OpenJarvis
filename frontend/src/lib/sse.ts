@@ -7,6 +7,7 @@ export interface ChatRequest {
   stream: true;
   temperature?: number;
   max_tokens?: number;
+  direct?: boolean;
 }
 
 export async function* streamChat(
@@ -14,10 +15,11 @@ export async function* streamChat(
   signal?: AbortSignal,
 ): AsyncGenerator<SSEEvent> {
   const base = getBase();
+  const { direct, ...payload } = request;
   const response = await fetch(`${base}/v1/chat/completions`, {
     method: 'POST',
-    headers: authHeaders({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify(request),
+    headers: authHeaders({ 'Content-Type': 'application/json', ...(direct ? { 'X-Seven-Direct': '1' } : {}) }),
+    body: JSON.stringify(payload),
     signal,
   });
 

@@ -96,14 +96,14 @@ function FilesystemPanel({
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-        Enter the path to your local {displayName} folder.
+        Informe o caminho da sua pasta local {displayName} pasta.
       </p>
       <div className="flex gap-2">
         <input
           type="text"
           value={path}
           onChange={(e) => setPath(e.target.value)}
-          placeholder="/Users/you/Documents/..."
+          placeholder="/Users/voce/Documentos/..."
           className="flex-1 px-3 py-2 rounded-lg text-sm outline-none"
           style={{
             background: 'var(--color-surface)',
@@ -122,7 +122,7 @@ function FilesystemPanel({
           }}
         >
           {isConnecting ? <Loader2 size={14} className="animate-spin" /> : <FolderOpen size={14} />}
-          Connect
+          Conectar
         </button>
       </div>
       <button
@@ -130,7 +130,7 @@ function FilesystemPanel({
         className="text-xs self-start"
         style={{ color: 'var(--color-text-tertiary)' }}
       >
-        Skip for now
+        Pular por enquanto
       </button>
     </div>
   );
@@ -190,7 +190,7 @@ function OAuthPanel({
       {waiting ? (
         <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--color-accent)' }}>
           <Loader2 size={16} className="animate-spin" />
-          Waiting for authorization...
+          Aguardando autorização...
         </div>
       ) : (
         <button
@@ -202,7 +202,7 @@ function OAuthPanel({
           }}
         >
           <ExternalLink size={14} />
-          Connect {displayName}
+          Conectar {displayName}
         </button>
       )}
       <button
@@ -210,7 +210,7 @@ function OAuthPanel({
         className="text-xs self-start"
         style={{ color: 'var(--color-text-tertiary)' }}
       >
-        Skip for now
+        Pular por enquanto
       </button>
     </div>
   );
@@ -230,8 +230,8 @@ function LocalPanel({
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-        {displayName} reads data directly from your Mac. Make sure the app is installed and
-        Full Disk Access is granted to OpenJarvis in System Settings.
+        {displayName} lê os dados diretamente do seu Mac. Confirme que o aplicativo está instalado e
+        que o OpenJarvis tem Acesso Total ao Disco nas Configurações do Sistema.
       </p>
       <div
         className="px-4 py-3 rounded-lg text-sm"
@@ -240,8 +240,8 @@ function LocalPanel({
           color: 'var(--color-text-secondary)',
         }}
       >
-        <strong>System Settings</strong> → Privacy &amp; Security → Full Disk Access →
-        enable OpenJarvis
+        <strong>Configurações do Sistema</strong> → Privacidade e Segurança → Acesso Total ao Disco →
+        ativar OpenJarvis
       </div>
       <button
         onClick={() => onConnect({})}
@@ -255,14 +255,14 @@ function LocalPanel({
         }}
       >
         {isConnecting && <Loader2 size={14} className="animate-spin" />}
-        Check Access
+        Verificar acesso
       </button>
       <button
         onClick={onSkip}
         className="text-xs self-start"
         style={{ color: 'var(--color-text-tertiary)' }}
       >
-        Skip for now
+        Pular por enquanto
       </button>
     </div>
   );
@@ -354,7 +354,7 @@ function StepByStepPanel({
             color: 'var(--color-accent-purple)', fontSize: 11,
             fontWeight: 600, marginBottom: 4,
           }}>
-            STEP {i + 1}
+            ETAPA {i + 1}
           </div>
           <div style={{
             color: 'var(--color-text)',
@@ -372,7 +372,7 @@ function StepByStepPanel({
                 textDecoration: 'underline',
               }}
             >
-              {step.urlLabel || 'Open'} &rarr;
+              {step.urlLabel || 'Abrir'} &rarr;
             </a>
           )}
         </div>
@@ -438,7 +438,7 @@ function StepByStepPanel({
         fontSize: 11, color: 'var(--color-text-secondary)',
         marginBottom: 12, textAlign: 'center',
       }}>
-        Read-only access &middot; No data leaves your device
+        Acesso somente leitura &middot; nenhum dado sai do dispositivo
       </div>
 
       <div style={{ display: 'flex', gap: 8 }}>
@@ -454,7 +454,7 @@ function StepByStepPanel({
             cursor: 'pointer',
           }}
         >
-          {isConnecting ? 'Connecting...' : `Connect ${connector.display_name}`}
+          {isConnecting ? 'Conectando...' : `Connect ${connector.display_name}`}
         </button>
         <button
           onClick={onSkip}
@@ -467,7 +467,7 @@ function StepByStepPanel({
             cursor: 'pointer',
           }}
         >
-          Skip
+          Pular
         </button>
       </div>
     </div>
@@ -534,7 +534,7 @@ export function SourceConnectFlow({
       <div className="w-48 shrink-0 flex flex-col gap-1 py-1">
         <p className="text-xs font-semibold uppercase tracking-wider mb-2"
           style={{ color: 'var(--color-text-tertiary)' }}>
-          Sources
+          Fontes
         </p>
         {entries.map((entry, idx) => {
           const card = SOURCE_CATALOG.find((c) => c.connector_id === entry.id);
@@ -579,7 +579,7 @@ export function SourceConnectFlow({
               <div className="flex items-center gap-2 text-sm"
                 style={{ color: 'var(--color-accent)' }}>
                 <CheckCircle2 size={18} />
-                Connected
+                Conectado
               </div>
             ) : activeCard.steps ? (
               <StepByStepPanel
@@ -618,7 +618,7 @@ export function SourceConnectFlow({
           <div className="flex flex-col items-center justify-center flex-1 gap-3">
             <CheckCircle2 size={32} style={{ color: 'var(--color-accent)' }} />
             <p className="text-base font-semibold" style={{ color: 'var(--color-text)' }}>
-              All sources configured
+              Todas as fontes configuradas
             </p>
           </div>
         )}
@@ -630,7 +630,7 @@ export function SourceConnectFlow({
               className="w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all"
               style={{ background: 'var(--color-accent)', color: 'var(--color-on-accent)' }}
             >
-              Continue →
+              Continuar →
             </button>
           </div>
         )}

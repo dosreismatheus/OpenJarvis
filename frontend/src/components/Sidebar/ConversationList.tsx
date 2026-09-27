@@ -9,13 +9,13 @@ interface Props {
 function formatRelativeTime(timestamp: number): string {
   const diff = Date.now() - timestamp;
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return 'Just now';
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 1) return 'Agora mesmo';
+  if (minutes < 60) return `há ${minutes} min`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `há ${hours} h`;
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(timestamp).toLocaleDateString();
+  if (days < 7) return `há ${days} dias`;
+  return new Date(timestamp).toLocaleDateString('pt-BR');
 }
 
 export function ConversationList({ searchQuery }: Props) {
@@ -37,7 +37,7 @@ export function ConversationList({ searchQuery }: Props) {
   if (filtered.length === 0) {
     return (
       <div className="px-3 py-8 text-center text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-        {searchQuery ? 'No matching chats' : 'No conversations yet'}
+        {searchQuery ? 'Nenhuma conversa encontrada' : 'Nenhuma conversa ainda'}
       </div>
     );
   }
@@ -64,7 +64,7 @@ export function ConversationList({ searchQuery }: Props) {
             <button
               onClick={() => {
                 selectConversation(conv.id);
-                navigate('/');
+                navigate('/chat');
               }}
               className="flex-1 text-left px-3 py-2 min-w-0 cursor-pointer"
             >
@@ -95,8 +95,8 @@ export function ConversationList({ searchQuery }: Props) {
               onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-tertiary)')}
               title={
                 isStreaming
-                  ? 'Stop generating before deleting this conversation'
-                  : 'Delete conversation'
+                  ? 'Interrompa a resposta antes de excluir esta conversa'
+                  : 'Excluir conversa'
               }
             >
               <Trash2 size={14} />

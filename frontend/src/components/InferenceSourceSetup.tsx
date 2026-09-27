@@ -63,10 +63,10 @@ function SetupFrame({ children }: { children: React.ReactNode }) {
             <Cpu size={32} />
           </div>
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-text)' }}>
-            Choose your inference source
+            Escolha sua fonte de inferência
           </h1>
           <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-            Nothing is installed, started, or downloaded until you confirm a choice.
+            Nada foi instalado, iniciado ou baixado até que você confirme uma escolha.
           </p>
         </div>
         <div
@@ -100,7 +100,7 @@ export function InferenceSourceChooser({
               Local Ollama
             </span>
             <span className="block text-xs mt-1" style={{ color: 'var(--color-text-secondary)' }}>
-              Run models on this computer. Requires a separate confirmation before Ollama starts or a model downloads.
+              Executar modelos neste computador. Requer confirmação separada antes do Ollama iniciar ou de um modelo ser baixado.
             </span>
           </span>
         </button>
@@ -113,10 +113,10 @@ export function InferenceSourceChooser({
           <Server size={22} className="shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
           <span>
             <span className="block text-sm font-semibold" style={{ color: 'var(--color-text)' }}>
-              OpenAI-compatible server
+              Servidor compatível com OpenAI
             </span>
             <span className="block text-xs mt-1" style={{ color: 'var(--color-text-secondary)' }}>
-              Connect to LM Studio, vLLM, SGLang, llama.cpp, MLX, or another compatible endpoint. Ollama stays off.
+              Conecte-se ao servidor LM Studio, vLLM, SGLang, llama.cpp, MLX ou a outro endpoint compatível. O Ollama permanece desligado.
             </span>
           </span>
         </button>
@@ -125,7 +125,7 @@ export function InferenceSourceChooser({
   );
 }
 
-function BackButton({ onClick, label = 'Back', disabled = false }: { onClick: () => void; label?: string; disabled?: boolean }) {
+function BackButton({ onClick, label = 'Voltar', disabled = false }: { onClick: () => void; label?: string; disabled?: boolean }) {
   return (
     <button
       type="button"
@@ -182,10 +182,10 @@ export function OllamaConsent({
         <Download size={22} className="shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
         <div>
           <h2 className="text-base font-semibold mb-1" style={{ color: 'var(--color-text)' }}>
-            Allow local model setup?
+            Permitir configuração local de modelo?
           </h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-            OpenJarvis will start Ollama and may download one model selected for this computer. Model downloads can use several gigabytes of disk space and network data.
+            O OpenJarvis iniciará o Ollama e pode baixar um modelo selecionado para este computador. As baixas de modelos podem usar vários gigabytes de espaço em disco e dados de rede.
           </p>
         </div>
       </div>
@@ -194,7 +194,7 @@ export function OllamaConsent({
         style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-text-secondary)' }}
       >
         <ShieldCheck size={16} className="shrink-0" style={{ color: 'var(--color-accent)' }} />
-        Going back leaves Ollama stopped and does not save this choice.
+        Voltar deixará o Ollama parado e não salvará esta escolha.
       </div>
       {error && <SetupError message={error} />}
       <button
@@ -205,7 +205,7 @@ export function OllamaConsent({
         style={{ background: 'var(--color-accent)', color: 'white' }}
       >
         {busy && <Loader2 size={16} className="animate-spin" />}
-        {busy ? 'Starting local setup...' : 'Use Ollama and continue'}
+        {busy ? 'Iniciando configuração local...' : 'Usar Ollama e continuar'}
       </button>
     </SetupFrame>
   );
@@ -262,20 +262,20 @@ export function CustomEndpointSetup({
 
   return (
     <SetupFrame>
-      <BackButton onClick={onCancel} label="Cancel" disabled={busy} />
+      <BackButton onClick={onCancel} label="Cancelar" disabled={busy} />
       <form onSubmit={submit} className="flex flex-col gap-4">
         <div>
           <h2 className="text-base font-semibold mb-1" style={{ color: 'var(--color-text)' }}>
-            Connect your server
+            Conecte seu servidor
           </h2>
           <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-            OpenJarvis will connect only after you submit this form. Ollama will not start or download models.
+            O OpenJarvis conectará apenas após você submeter este formulário. O Ollama não iniciará nem baixará modelos.
           </p>
         </div>
         <label className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-          Server URL
+          URL do servidor
           <input
-            aria-label="Server URL"
+            aria-label="URL do servidor"
             type="url"
             required
             value={host}
@@ -285,9 +285,9 @@ export function CustomEndpointSetup({
           />
         </label>
         <label className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-          Model ID
+          ID do modelo
           <input
-            aria-label="Model ID"
+            aria-label="ID do modelo"
             type="text"
             required
             value={model}
@@ -298,9 +298,9 @@ export function CustomEndpointSetup({
           />
         </label>
         <label className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-          Server type
+          Tipo de servidor
           <select
-            aria-label="Server type"
+            aria-label="Tipo de servidor"
             value={engine}
             onChange={(event) => setEngine(event.target.value)}
             className="block w-full mt-1.5 px-3 py-2 rounded-lg text-sm outline-none"
@@ -314,7 +314,7 @@ export function CustomEndpointSetup({
           </select>
         </label>
         <label className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-          API key (optional)
+          API key (opcional)
           <input
             aria-label="API key"
             type="password"
@@ -333,7 +333,7 @@ export function CustomEndpointSetup({
           style={{ background: 'var(--color-accent)', color: 'white' }}
         >
           {busy && <Loader2 size={16} className="animate-spin" />}
-          {busy ? 'Connecting...' : 'Save and connect'}
+          {busy ? 'Conectando...' : 'Salvar e conectar'}
         </button>
       </form>
     </SetupFrame>

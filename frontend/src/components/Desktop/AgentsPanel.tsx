@@ -164,7 +164,7 @@ function LaunchWizard({
   }
 
   async function handleLaunch() {
-    if (!wizard.name.trim()) { setError('Agent name is required.'); return; }
+    if (!wizard.name.trim()) { setError('O nome do agente é obrigatório.'); return; }
     setLaunching(true);
     setError('');
     try {
@@ -182,7 +182,7 @@ function LaunchWizard({
       });
       onLaunched();
     } catch {
-      setError('Failed to create agent. Please try again.');
+      setError('Falha ao criar o agente. Tente novamente.');
     } finally {
       setLaunching(false);
     }
@@ -216,7 +216,7 @@ function LaunchWizard({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: `1px solid ${C.border}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ color: C.accent, fontSize: 16 }}>◈</span>
-            <span style={{ color: C.text, fontWeight: 600, fontSize: 15 }}>Launch Agent</span>
+            <span style={{ color: C.text, fontWeight: 600, fontSize: 15 }}>Iniciar Agente</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {/* Step indicator */}
@@ -248,7 +248,7 @@ function LaunchWizard({
           {wizard.step === 1 && (
             <div>
               <p style={{ color: C.subtext0, fontSize: 13, marginBottom: 12 }}>
-                Choose a template or start from scratch
+                Escolha um modelo ou inicie do zero
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <button
@@ -260,8 +260,8 @@ function LaunchWizard({
                     cursor: 'pointer',
                   }}
                 >
-                  <div style={{ color: C.text, fontSize: 13, fontWeight: 500 }}>Custom Agent</div>
-                  <div style={{ color: C.overlay0, fontSize: 11, marginTop: 2 }}>Start from scratch with full control</div>
+                  <div style={{ color: C.text, fontSize: 13, fontWeight: 500 }}>Agente Personalizado</div>
+                  <div style={{ color: C.overlay0, fontSize: 11, marginTop: 2 }}>Inicie do zero com controle completo</div>
                 </button>
                 {templates.map((t) => (
                   <button
@@ -289,12 +289,12 @@ function LaunchWizard({
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
                 <label style={{ display: 'block', color: C.subtext0, fontSize: 12, marginBottom: 6, fontWeight: 500 }}>
-                  Agent Name *
+                  Nome do Agente *
                 </label>
                 <input
                   style={inputStyle}
                   type="text"
-                  placeholder="e.g. Research Assistant"
+                  placeholder="Ex: Assistente de Pesquisa"
                   value={wizard.name}
                   onChange={(e) => update({ name: e.target.value })}
                 />
@@ -303,7 +303,7 @@ function LaunchWizard({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', color: C.subtext0, fontSize: 12, marginBottom: 6, fontWeight: 500 }}>
-                    Schedule Type
+                    Tipo de Cronograma
                   </label>
                   <select
                     style={selectStyle}
@@ -317,7 +317,7 @@ function LaunchWizard({
                 </div>
                 <div>
                   <label style={{ display: 'block', color: C.subtext0, fontSize: 12, marginBottom: 6, fontWeight: 500 }}>
-                    Schedule Value
+                    Valor da programação
                   </label>
                   <input
                     style={{ ...inputStyle, opacity: wizard.scheduleType === 'manual' ? 0.4 : 1 }}
@@ -332,7 +332,7 @@ function LaunchWizard({
 
               <div>
                 <label style={{ display: 'block', color: C.subtext0, fontSize: 12, marginBottom: 6, fontWeight: 500 }}>
-                  Tools
+                  Ferramentas
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   {AVAILABLE_TOOLS.map((tool) => (
@@ -359,7 +359,7 @@ function LaunchWizard({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', color: C.subtext0, fontSize: 12, marginBottom: 6, fontWeight: 500 }}>
-                    Budget ($, optional)
+                    Orçamento (US$, opcional)
                   </label>
                   <input
                     style={inputStyle}
@@ -382,7 +382,7 @@ function LaunchWizard({
                       checked={wizard.learningEnabled}
                       onChange={(e) => update({ learningEnabled: e.target.checked })}
                     />
-                    <span style={{ color: C.text, fontSize: 12 }}>Enable Learning</span>
+                    <span style={{ color: C.text, fontSize: 12 }}>Ativar aprendizado</span>
                   </label>
                 </div>
               </div>
@@ -392,15 +392,15 @@ function LaunchWizard({
           {/* Step 3: Review */}
           {wizard.step === 3 && (
             <div>
-              <p style={{ color: C.subtext0, fontSize: 13, marginBottom: 12 }}>Review your configuration</p>
+              <p style={{ color: C.subtext0, fontSize: 13, marginBottom: 12 }}>Revise sua configuração</p>
               <div style={{ background: C.surface0, borderRadius: 8, padding: 16, border: `1px solid ${C.border}` }}>
                 {[
                   ['Name', wizard.name || '(unnamed)'],
                   ['Template', wizard.templateId ? (templates.find((t) => t.id === wizard.templateId)?.name ?? wizard.templateId) : 'Custom'],
                   ['Schedule', formatSchedule(wizard.scheduleType, wizard.scheduleValue)],
-                  ['Tools', wizard.selectedTools.length > 0 ? wizard.selectedTools.join(', ') : 'None'],
+                  ['Ferramentas', wizard.selectedTools.length > 0 ? wizard.selectedTools.join(', ') : 'Nenhum'],
                   ['Budget', wizard.budget ? `$${wizard.budget}` : 'Unlimited'],
-                  ['Learning', wizard.learningEnabled ? 'Enabled' : 'Disabled'],
+                  ['Aprendizado', wizard.learningEnabled ? 'Ativado' : 'Desativado'],
                 ].map(([label, value]) => (
                   <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${C.border}`, fontSize: 13 }}>
                     <span style={{ color: C.overlay0 }}>{label}</span>
@@ -421,14 +421,14 @@ function LaunchWizard({
             onClick={() => wizard.step > 1 ? update({ step: (wizard.step - 1) as 1 | 2 | 3 }) : onClose()}
             style={{ padding: '8px 16px', borderRadius: 6, border: 'none', background: 'none', color: C.subtext0, cursor: 'pointer', fontSize: 13 }}
           >
-            {wizard.step === 1 ? 'Cancel' : 'Back'}
+            {wizard.step === 1 ? 'Cancelar' : 'Voltar'}
           </button>
           {wizard.step < 3 ? (
             <button
               onClick={() => update({ step: (wizard.step + 1) as 2 | 3 })}
               style={{ padding: '8px 16px', borderRadius: 6, border: 'none', background: C.accent, color: C.bg, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
             >
-              Next
+              Próximo
             </button>
           ) : (
             <button
@@ -485,7 +485,7 @@ function InteractTab({ apiUrl, agentId }: { apiUrl: string; agentId: string }) {
       setInput('');
       await loadMessages();
     } catch {
-      setError('Failed to send message.');
+      setError('Falha ao enviar a mensagem.');
     } finally {
       setSending(false);
     }
@@ -501,7 +501,7 @@ function InteractTab({ apiUrl, agentId }: { apiUrl: string; agentId: string }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 8px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {messages.length === 0 && (
           <div style={{ color: C.overlay0, fontSize: 13, textAlign: 'center', marginTop: 32 }}>
-            No messages yet. Send a message to the agent below.
+            Ainda não há mensagens. Envie uma mensagem ao agente abaixo.
           </div>
         )}
         {messages.map((msg) => {
@@ -544,7 +544,7 @@ function InteractTab({ apiUrl, agentId }: { apiUrl: string; agentId: string }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Send a message to this agent… (Enter to send)"
+            placeholder="Envie uma mensagem a este agente… (Enter para enviar)"
             rows={2}
             style={{
               width: '100%', padding: '8px 12px', borderRadius: 6,
@@ -554,7 +554,7 @@ function InteractTab({ apiUrl, agentId }: { apiUrl: string; agentId: string }) {
             }}
           />
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: C.overlay0, fontSize: 11 }}>Mode:</span>
+            <span style={{ color: C.overlay0, fontSize: 11 }}>Modo:</span>
             {(['queued', 'immediate'] as const).map((m) => (
               <button
                 key={m}
@@ -581,7 +581,7 @@ function InteractTab({ apiUrl, agentId }: { apiUrl: string; agentId: string }) {
             flexShrink: 0,
           }}
         >
-          Send
+          Enviar
         </button>
       </div>
     </div>
@@ -601,7 +601,7 @@ function TasksTab({ tasks }: { tasks: AgentTask[] }) {
   };
 
   if (tasks.length === 0) {
-    return <div style={{ color: C.overlay0, fontSize: 13, textAlign: 'center', marginTop: 32 }}>No tasks found.</div>;
+    return <div style={{ color: C.overlay0, fontSize: 13, textAlign: 'center', marginTop: 32 }}>Nenhuma tarefa encontrada.</div>;
   }
 
   return (
@@ -620,7 +620,7 @@ function TasksTab({ tasks }: { tasks: AgentTask[] }) {
             </span>
           </div>
           <div style={{ color: C.overlay0, fontSize: 11, marginTop: 4 }}>
-            Created {formatRelativeTime(t.created_at)}
+            Criado {formatRelativeTime(t.created_at)}
           </div>
         </div>
       ))}
@@ -636,14 +636,14 @@ function MemoryTab({ agent }: { agent: ManagedAgent }) {
   return (
     <div>
       <div style={{ color: C.subtext0, fontSize: 12, marginBottom: 8, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-        Summary Memory
+        Memória resumida
       </div>
       <div style={{ background: C.surface0, borderRadius: 8, padding: 14, border: `1px solid ${C.border}` }}>
         <pre style={{
           color: C.text, fontSize: 12, whiteSpace: 'pre-wrap', margin: 0,
           fontFamily: "'JetBrains Mono', 'Fira Code', monospace", lineHeight: 1.6,
         }}>
-          {agent.summary_memory || 'No memory stored yet.'}
+          {agent.summary_memory || 'Nenhuma memória salva ainda.'}
         </pre>
       </div>
     </div>
@@ -679,7 +679,7 @@ function OverviewTab({ agent, onRun, onPause, onResume, onRecover }: {
       {/* Stats */}
       <div style={{ background: C.surface0, borderRadius: 8, padding: '12px 16px', border: `1px solid ${C.border}` }}>
         <div style={rowStyle}>
-          <span style={labelStyle}>Status</span>
+          <span style={labelStyle}>Estado</span>
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '2px 10px', borderRadius: 12, fontSize: 12, fontWeight: 600,
@@ -690,27 +690,27 @@ function OverviewTab({ agent, onRun, onPause, onResume, onRecover }: {
           </span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>Agent Type</span>
+          <span style={labelStyle}>Tipo de agente</span>
           <span style={valueStyle}>{agent.agent_type}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>Schedule</span>
+          <span style={labelStyle}>Programação</span>
           <span style={valueStyle}>{formatAgentSchedule(agent)}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>Last Run</span>
+          <span style={labelStyle}>Última execução</span>
           <span style={valueStyle}>{formatRelativeTime(agent.last_run_at)}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>Total Runs</span>
+          <span style={labelStyle}>Total de execuções</span>
           <span style={valueStyle}>{agent.total_runs ?? 0}</span>
         </div>
         <div style={rowStyle}>
-          <span style={labelStyle}>Total Cost</span>
+          <span style={labelStyle}>Custo Total</span>
           <span style={valueStyle}>{formatCost(agent.total_cost)}</span>
         </div>
         <div style={{ ...rowStyle, borderBottom: 'none' }}>
-          <span style={labelStyle}>Budget</span>
+          <span style={labelStyle}>Orçamento</span>
           <span style={valueStyle}>{agent.budget !== undefined ? `$${agent.budget}` : 'Unlimited'}</span>
         </div>
         {/* Budget progress bar */}
@@ -746,7 +746,7 @@ function OverviewTab({ agent, onRun, onPause, onResume, onRecover }: {
             cursor: 'pointer', fontSize: 12, fontWeight: 600,
           }}
         >
-          ▶ Run Now
+          ▶ Executar Agora
         </button>
         {canPause && (
           <button
@@ -757,7 +757,7 @@ function OverviewTab({ agent, onRun, onPause, onResume, onRecover }: {
               cursor: 'pointer', fontSize: 12, fontWeight: 600,
             }}
           >
-            ⏸ Pause
+            ⏸ Pausar
           </button>
         )}
         {canResume && (
@@ -769,7 +769,7 @@ function OverviewTab({ agent, onRun, onPause, onResume, onRecover }: {
               cursor: 'pointer', fontSize: 12, fontWeight: 600,
             }}
           >
-            ▶ Resume
+            ▶ Retomar
           </button>
         )}
         {canRecover && (
@@ -781,7 +781,7 @@ function OverviewTab({ agent, onRun, onPause, onResume, onRecover }: {
               cursor: 'pointer', fontSize: 12, fontWeight: 600,
             }}
           >
-            ↺ Recover
+            ↺ Recuperar
           </button>
         )}
       </div>
@@ -826,14 +826,14 @@ function LearningTabContent({
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ color: C.subtext0, fontSize: 12, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Learning
+            Aprendizado
           </span>
           <span style={{
             fontSize: 11, padding: '1px 8px', borderRadius: 8,
             background: learningEnabled ? C.green + '25' : C.surface0,
             color: learningEnabled ? C.green : C.overlay0,
           }}>
-            {learningEnabled ? 'Enabled' : 'Disabled'}
+            {learningEnabled ? 'Ativado' : 'Desativado'}
           </span>
         </div>
         <button
@@ -850,7 +850,7 @@ function LearningTabContent({
       </div>
       {logs.length === 0 ? (
         <div style={{ color: C.overlay0, fontSize: 13, textAlign: 'center', marginTop: 32 }}>
-          No learning events yet. Run the agent or trigger learning manually.
+          Não há eventos de aprendizado ainda. Execute o agente ou ative o aprendizado manualmente.
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -897,7 +897,7 @@ function LogsTabContent({ apiUrl, agentId }: { apiUrl: string; agentId: string }
   if (traces.length === 0) {
     return (
       <div style={{ color: C.overlay0, fontSize: 13, textAlign: 'center', marginTop: 32 }}>
-        No execution traces yet. Run the agent to generate traces.
+        Nenhuma trace de execução ainda. Execute o agente para gerar traces.
       </div>
     );
   }
@@ -906,10 +906,10 @@ function LogsTabContent({ apiUrl, agentId }: { apiUrl: string; agentId: string }
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <span style={{ color: C.subtext0, fontSize: 12, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Execution Traces
+          Trace de Execução
         </span>
         <span style={{ color: C.overlay0, fontSize: 11 }}>
-          {traces.length} trace{traces.length !== 1 ? 's' : ''}
+          {traces.length} registro{traces.length !== 1 ? 's' : ''}
         </span>
       </div>
       {traces.map((t) => (
@@ -931,7 +931,7 @@ function LogsTabContent({ apiUrl, agentId }: { apiUrl: string; agentId: string }
           </div>
           <div style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 11, color: C.overlay0 }}>
             <span>{t.duration.toFixed(1)}s</span>
-            <span>{t.steps} step{t.steps !== 1 ? 's' : ''}</span>
+            <span>{t.steps} passo{t.steps !== 1 ? 's' : ''}</span>
           </div>
         </div>
       ))}
@@ -950,7 +950,7 @@ const DETAIL_TABS: { id: DetailTab; label: string }[] = [
   { id: 'interact', label: 'Interact' },
   { id: 'tasks', label: 'Tasks' },
   { id: 'memory', label: 'Memory' },
-  { id: 'learning', label: 'Learning' },
+  { id: 'learning', label: 'Aprendizado' },
   { id: 'logs', label: 'Logs' },
 ];
 
@@ -983,7 +983,7 @@ function DetailPanel({
           <h2 style={{ color: C.text, fontSize: 18, fontWeight: 700, margin: 0 }}>{agent.name}</h2>
         </div>
         <div style={{ color: C.overlay0, fontSize: 12 }}>
-          {agent.agent_type} · Schedule: {formatAgentSchedule(agent)} · Last run: {formatRelativeTime(agent.last_run_at)}
+          {agent.agent_type} · Agendar: {formatAgentSchedule(agent)} · Última execução: {formatRelativeTime(agent.last_run_at)}
         </div>
       </div>
 
@@ -1096,7 +1096,7 @@ export function AgentsPanel({ apiUrl }: Props) {
   }, [apiUrl, refresh]);
 
   const handleDelete = useCallback(async (id: string) => {
-    if (!confirm('Delete this agent? This cannot be undone.')) return;
+    if (!confirm('Excluir este agente? Esta ação não pode ser desfeita.')) return;
     await deleteManagedAgent(apiUrl, id).catch(() => {});
     if (selectedId === id) setSelectedId(null);
     refresh();
@@ -1107,7 +1107,7 @@ export function AgentsPanel({ apiUrl }: Props) {
   if (loading) {
     return (
       <div style={{ padding: 40, color: C.overlay0, textAlign: 'center' }}>
-        Loading agents...
+        Carregando agentes...
       </div>
     );
   }
@@ -1118,7 +1118,7 @@ export function AgentsPanel({ apiUrl }: Props) {
       <div style={{ width: 300, flexShrink: 0, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
         <div style={{ padding: '12px 14px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ color: C.text, fontSize: 14, fontWeight: 600 }}>Agents ({agents.length})</span>
+          <span style={{ color: C.text, fontSize: 14, fontWeight: 600 }}>Agentes ({agents.length})</span>
           <button
             onClick={() => setShowWizard(true)}
             style={{
@@ -1127,7 +1127,7 @@ export function AgentsPanel({ apiUrl }: Props) {
               cursor: 'pointer', fontSize: 12, fontWeight: 600,
             }}
           >
-            + Launch
+            + Iniciar
           </button>
         </div>
 
@@ -1160,7 +1160,7 @@ export function AgentsPanel({ apiUrl }: Props) {
                       background: 'none', border: 'none', color: C.overlay0,
                       cursor: 'pointer', fontSize: 14, padding: '0 2px', flexShrink: 0, lineHeight: 1,
                     }}
-                    title="Delete agent"
+                    title="Excluir agente"
                   >
                     ×
                   </button>
@@ -1169,15 +1169,15 @@ export function AgentsPanel({ apiUrl }: Props) {
                   {formatAgentSchedule(a)}
                 </div>
                 <div style={{ color: C.overlay1, fontSize: 11, marginTop: 2 }}>
-                  Last run: {formatRelativeTime(a.last_run_at)}
+                  Última execução: {formatRelativeTime(a.last_run_at)}
                 </div>
               </div>
             );
           })}
           {agents.length === 0 && (
             <div style={{ color: C.overlay0, fontSize: 13, textAlign: 'center', marginTop: 40 }}>
-              No agents found.<br />
-              <span style={{ fontSize: 12 }}>Click "+ Launch" to create one.</span>
+              Nenhum agente encontrado.<br />
+              <span style={{ fontSize: 12 }}>Clique em "+ Launch" para criar um.</span>
             </div>
           )}
         </div>
@@ -1197,7 +1197,7 @@ export function AgentsPanel({ apiUrl }: Props) {
           />
         ) : (
           <div style={{ color: C.overlay0, textAlign: 'center', marginTop: 80, fontSize: 14 }}>
-            Select an agent to view details
+            Selecione um agente para ver os detalhes
           </div>
         )}
       </div>

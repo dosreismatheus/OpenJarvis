@@ -1,0 +1,19 @@
+[engine]
+default = "ollama"
+
+[intelligence]
+default_model = "qwen3.5:2b"
+
+[agent]
+default_agent = "simple"
+
+[tools]
+enabled = ["web_search"]
+
+[security]
+profile = "personal"
+
+[speech]
+voice_id = "pf_dora"
+language = "pt"
+tts_backend = "kokoro"

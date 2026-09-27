@@ -376,7 +376,7 @@ function StepDataView({ data }: { data: TraceStepData }) {
           style={styles.expandButton}
           onClick={() => setExpanded(!expanded)}
         >
-          {expanded ? 'Show less' : `Show ${entries.length - 3} more fields...`}
+          {expanded ? 'Mostrar menos' : `Show ${entries.length - 3} more fields...`}
         </button>
       )}
     </div>
@@ -486,8 +486,8 @@ export function TraceDebugger({ apiUrl }: { apiUrl: string }) {
         <div style={styles.emptyState}>
           <div style={styles.emptyIcon}>&#x1F50D;</div>
           <div style={styles.emptyText}>
-            No traces available.<br />
-            Traces are recorded when queries are processed through the system.
+            Nenhum registro disponível.<br />
+            Os registros são criados quando o sistema processa consultas.
           </div>
         </div>
       </div>
@@ -499,8 +499,8 @@ export function TraceDebugger({ apiUrl }: { apiUrl: string }) {
       {/* Left panel - trace list */}
       <div style={styles.listPanel}>
         <div style={styles.listHeader}>
-          <h2 style={styles.listTitle}>Traces</h2>
-          <p style={styles.listSubtitle}>{traces.length} recent traces</p>
+          <h2 style={styles.listTitle}>Registros</h2>
+          <p style={styles.listSubtitle}>{traces.length} registros recentes</p>
         </div>
 
         {error && <div style={styles.errorBanner}>{error}</div>}
@@ -531,7 +531,7 @@ export function TraceDebugger({ apiUrl }: { apiUrl: string }) {
                 <div style={styles.traceItemId}>{truncateId(trace.id)}</div>
                 <div style={styles.traceItemQuery}>{trace.query}</div>
                 <div style={styles.traceItemMeta}>
-                  <span>{trace.steps.length} steps</span>
+                  <span>{trace.steps.length} passos</span>
                   <span>{formatTimestamp(trace.created_at)}</span>
                 </div>
               </div>
@@ -544,26 +544,26 @@ export function TraceDebugger({ apiUrl }: { apiUrl: string }) {
       <div style={styles.detailPanel}>
         {!selectedId && (
           <div style={styles.placeholder}>
-            Select a trace from the list to inspect its steps.
+            Selecione um registro da lista para inspecionar seus passos.
           </div>
         )}
 
         {selectedId && detailLoading && (
-          <div style={styles.placeholder}>Loading trace...</div>
+          <div style={styles.placeholder}>Carregando registro...</div>
         )}
 
         {selectedId && !detailLoading && traceDetail && (
           <>
             <div style={styles.detailHeader}>
               <h3 style={styles.detailTitle}>
-                Trace {truncateId(traceDetail.id)}
+                Registro {truncateId(traceDetail.id)}
               </h3>
               <p style={styles.detailQuery}>
-                Query: &quot;{traceDetail.query}&quot;
+                Consulta: &quot;{traceDetail.query}&quot;
               </p>
               <div style={styles.detailStats}>
                 <span>
-                  Steps:{' '}
+                  Passos:{' '}
                   <span style={styles.detailStatValue}>
                     {traceDetail.steps.length}
                   </span>
@@ -576,7 +576,7 @@ export function TraceDebugger({ apiUrl }: { apiUrl: string }) {
                 </span>
                 {traceDetail.created_at && (
                   <span>
-                    Created:{' '}
+                    Criado:{' '}
                     <span style={styles.detailStatValue}>
                       {formatTimestamp(traceDetail.created_at)}
                     </span>
@@ -588,7 +588,7 @@ export function TraceDebugger({ apiUrl }: { apiUrl: string }) {
             <div style={styles.detailScroll}>
               {traceDetail.steps.length === 0 ? (
                 <div style={styles.placeholder}>
-                  This trace contains no steps.
+                  Este registro não contém etapas.
                 </div>
               ) : (
                 <div style={styles.timelineContainer}>

@@ -9,11 +9,11 @@ dashboard_router = APIRouter()
 
 DASHBOARD_HTML = """\
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OpenJarvis — Savings Dashboard</title>
+<title>OpenJarvis — Painel de economia</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -146,10 +146,10 @@ DASHBOARD_HTML = """\
 <body>
 
 <div class="header">
-  <h1><span>OpenJarvis</span> Savings Dashboard</h1>
+  <h1><span>OpenJarvis</span> · Painel de economia</h1>
   <div class="status">
     <div class="dot"></div>
-    <span id="status-text">Live — refreshing every 5s</span>
+    <span id="status-text">Ao vivo — atualização a cada 5 s</span>
   </div>
 </div>
 
@@ -158,142 +158,142 @@ DASHBOARD_HTML = """\
   <!-- Top stats -->
   <div class="stats-row">
     <div class="stat-card">
-      <div class="label">Total Requests</div>
+      <div class="label">Solicitações totais</div>
       <div class="value accent" id="total-calls">0</div>
-      <div class="sub">inference calls served locally</div>
+      <div class="sub">consultas processadas neste computador</div>
     </div>
     <div class="stat-card">
-      <div class="label">Prompt Tokens</div>
+      <div class="label">Tokens de entrada</div>
       <div class="value" id="prompt-tokens">0</div>
-      <div class="sub">input tokens processed</div>
+      <div class="sub">tokens de entrada processados</div>
     </div>
     <div class="stat-card">
-      <div class="label">Completion Tokens</div>
+      <div class="label">Tokens de saída</div>
       <div class="value" id="completion-tokens">0</div>
-      <div class="sub">output tokens generated</div>
+      <div class="sub">tokens de saída gerados</div>
     </div>
     <div class="stat-card">
-      <div class="label">Total Tokens</div>
+      <div class="label">Total de tokens</div>
       <div class="value" id="total-tokens">0</div>
-      <div class="sub">tokens kept on-device</div>
+      <div class="sub">tokens processados neste dispositivo</div>
     </div>
   </div>
 
   <!-- Provider savings -->
-  <div class="providers-heading">Dollars Saved vs Cloud Providers</div>
+  <div class="providers-heading">Economia em relação a provedores de nuvem</div>
   <div class="providers">
     <div class="provider-card openai">
       <div class="pname">OpenAI</div>
-      <div class="pmodel">GPT-5.6 Sol &mdash; $5.00 / $30.00 per 1M tokens</div>
+      <div class="pmodel">GPT-5.6 Sol &mdash; $5.00 / $30.00 por 1 milhão de tokens</div>
       <div class="savings-amount" id="save-openai">$0.00</div>
       <div class="breakdown">
         <div class="item">
-          <div class="blabel">Input saved</div>
+          <div class="blabel">Economia na entrada</div>
           <div class="bvalue" id="save-openai-in">$0.00</div>
         </div>
         <div class="item">
-          <div class="blabel">Output saved</div>
+          <div class="blabel">Economia na saída</div>
           <div class="bvalue" id="save-openai-out">$0.00</div>
         </div>
       </div>
     </div>
     <div class="provider-card anthropic">
       <div class="pname">Anthropic</div>
-      <div class="pmodel">Claude Fable 5 &mdash; $10.00 / $50.00 per 1M tokens</div>
+      <div class="pmodel">Claude Fable 5 &mdash; $10.00 / $50.00 por 1 milhão de tokens</div>
       <div class="savings-amount" id="save-anthropic">$0.00</div>
       <div class="breakdown">
         <div class="item">
-          <div class="blabel">Input saved</div>
+          <div class="blabel">Economia na entrada</div>
           <div class="bvalue" id="save-anthropic-in">$0.00</div>
         </div>
         <div class="item">
-          <div class="blabel">Output saved</div>
+          <div class="blabel">Economia na saída</div>
           <div class="bvalue" id="save-anthropic-out">$0.00</div>
         </div>
       </div>
     </div>
     <div class="provider-card google">
       <div class="pname">Google</div>
-      <div class="pmodel">Gemini 3.1 Pro &mdash; $2.00 / $12.00 per 1M tokens</div>
+      <div class="pmodel">Gemini 3.1 Pro &mdash; $2.00 / $12.00 por 1 milhão de tokens</div>
       <div class="savings-amount" id="save-google">$0.00</div>
       <div class="breakdown">
         <div class="item">
-          <div class="blabel">Input saved</div>
+          <div class="blabel">Economia na entrada</div>
           <div class="bvalue" id="save-google-in">$0.00</div>
         </div>
         <div class="item">
-          <div class="blabel">Output saved</div>
+          <div class="blabel">Economia na saída</div>
           <div class="bvalue" id="save-google-out">$0.00</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Monthly Projection -->
-  <div class="providers-heading">Monthly Projection</div>
+  <!-- Projeção mensal -->
+  <div class="providers-heading">Projeção mensal</div>
   <div class="providers">
     <div class="provider-card openai">
-      <div class="pname">vs OpenAI</div>
-      <div class="pmodel">projected monthly savings</div>
+      <div class="pname">comparado à OpenAI</div>
+      <div class="pmodel">economia mensal estimada</div>
       <div class="savings-amount green" id="proj-openai">$0.00</div>
-      <div class="sub">per month at current rate</div>
+      <div class="sub">por mês, no ritmo atual</div>
     </div>
     <div class="provider-card anthropic">
-      <div class="pname">vs Anthropic</div>
-      <div class="pmodel">projected monthly savings</div>
+      <div class="pname">comparado à Anthropic</div>
+      <div class="pmodel">economia mensal estimada</div>
       <div class="savings-amount green" id="proj-anthropic">$0.00</div>
-      <div class="sub">per month at current rate</div>
+      <div class="sub">por mês, no ritmo atual</div>
     </div>
     <div class="provider-card google">
-      <div class="pname">vs Google</div>
-      <div class="pmodel">projected monthly savings</div>
+      <div class="pname">comparado ao Google</div>
+      <div class="pmodel">economia mensal estimada</div>
       <div class="savings-amount green" id="proj-google">$0.00</div>
-      <div class="sub">per month at current rate</div>
+      <div class="sub">por mês, no ritmo atual</div>
     </div>
   </div>
 
   <!-- Cloud Agent Platforms -->
-  <div class="providers-heading">vs Cloud Agent Platforms</div>
+  <div class="providers-heading">Comparação com plataformas de agentes em nuvem</div>
   <div class="providers" style="grid-template-columns: 1fr;">
     <div class="provider-card" style="border-top: 3px solid var(--purple);">
-      <div class="pname">Typical Cloud Agent Platform</div>
-      <div class="pmodel">based on published API pricing tiers</div>
+      <div class="pname">Plataforma de agentes em nuvem típica</div>
+      <div class="pmodel">com base nos preços públicos das APIs</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;
         gap:20px;margin-top:16px">
         <div>
-          <div class="blabel">MODERATE USE</div>
-          <div class="bvalue orange">$15&ndash;60/mo</div>
+          <div class="blabel">USO MODERADO</div>
+          <div class="bvalue orange">$15&ndash;60/mês</div>
         </div>
         <div>
-          <div class="blabel">HEAVY USE</div>
-          <div class="bvalue" style="color: var(--red);">$100&ndash;400+/mo</div>
+          <div class="blabel">USO INTENSO</div>
+          <div class="bvalue" style="color: var(--red);">$100&ndash;400+/mês</div>
         </div>
         <div>
-          <div class="blabel">YOUR COST</div>
+          <div class="blabel">SEU CUSTO</div>
           <div class="bvalue green" style="font-size: 24px;">$0.00</div>
-          <div class="sub">local inference</div>
+          <div class="sub">processamento local</div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Energy and FLOPs -->
-  <div class="providers-heading">Energy &amp; Compute Avoided</div>
+  <div class="providers-heading">Energia e processamento evitados</div>
   <div class="metrics-row">
     <div class="metric-card">
-      <div class="mheading">Energy Saved (vs GPT-5.6 Sol)</div>
+      <div class="mheading">Energia economizada (comparada ao GPT-5.6 Sol)</div>
       <div class="mvalue green" id="energy-joules">0 <span class="munit">J</span></div>
-      <div class="msub" id="energy-kwh">0 kWh of cloud datacenter energy avoided</div>
+      <div class="msub" id="energy-kwh">0 kWh de energia de datacenter evitados</div>
     </div>
     <div class="metric-card">
-      <div class="mheading">FLOPs Avoided (vs GPT-5.6 Sol)</div>
+      <div class="mheading">FLOPs evitados (comparados ao GPT-5.6 Sol)</div>
       <div class="mvalue purple" id="flops-val">0 <span class="munit">FLOP</span></div>
-      <div class="msub" id="flops-sub">cloud compute operations not needed</div>
+      <div class="msub" id="flops-sub">operações de processamento em nuvem evitadas</div>
     </div>
     <div class="metric-card">
-      <div class="mheading">CO&#8322; Equivalent Saved</div>
+      <div class="mheading">Equivalente de CO&#8322; evitado</div>
       <div class="mvalue orange" id="co2-val">0 <span class="munit">g</span></div>
-      <div class="msub" id="co2-sub">based on US grid avg 0.39 kg CO&#8322;/kWh</div>
+      <div class="msub" id="co2-sub">com base na média da rede elétrica dos EUA: 0,39 kg CO&#8322;/kWh</div>
     </div>
   </div>
 
@@ -310,12 +310,12 @@ function fmt(n) {
 }
 
 function fmtNum(n) {
-  return n.toLocaleString('en-US');
+  return n.toLocaleString('pt-BR');
 }
 
 function fmtDollar(n) {
   if (n >= 1000) return '$' + n.toLocaleString(
-    'en-US', {minimumFractionDigits: 2,
+    'pt-BR', {minimumFractionDigits: 2,
               maximumFractionDigits: 2});
   if (n >= 1) return '$' + n.toFixed(2);
   if (n >= 0.01) return '$' + n.toFixed(3);
@@ -401,20 +401,20 @@ async function refresh() {
       ' <span class="munit"></span>';
     document.getElementById('energy-kwh')
       .textContent = (eWh / 1000).toFixed(4) +
-      ' kWh of cloud datacenter energy avoided';
+      ' kWh de energia de datacenter evitados';
     document.getElementById('flops-val')
       .innerHTML = fmt(fl) +
       ' <span class="munit"></span>';
     document.getElementById('flops-sub')
       .textContent =
-      'cloud compute operations not needed';
+      'operações de processamento em nuvem evitadas';
     document.getElementById('co2-val')
       .innerHTML = fmtCO2(co2) +
       ' <span class="munit"></span>';
 
   } catch (e) {
     document.getElementById('status-text')
-      .textContent = 'Connection error — retrying...';
+      .textContent = 'Erro de conexão — tentando novamente...';
   }
 }
 

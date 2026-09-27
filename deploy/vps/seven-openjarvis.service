@@ -1,0 +1,23 @@
+[Unit]
+Description=Seven OpenJarvis API
+After=network-online.target ollama.service
+Wants=network-online.target
+Requires=ollama.service
+
+[Service]
+Type=simple
+User=sevenjarvis
+Group=sevenjarvis
+WorkingDirectory=/opt/seven-openjarvis/app
+Environment=HOME=/var/lib/seven-openjarvis
+Environment=PATH=/opt/seven-openjarvis/app/.venv/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/opt/seven-openjarvis/app/.venv/bin/python -m openjarvis.cli serve --host 127.0.0.1 --port 8737 --engine ollama --model qwen3.5:2b --agent simple
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/seven-openjarvis
+
+[Install]
+WantedBy=multi-user.target
