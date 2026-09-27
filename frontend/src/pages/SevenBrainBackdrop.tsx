@@ -15,8 +15,8 @@ export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
       if (document.visibilityState === 'visible' && now - lastUpdate >= 33) {
         const elapsed = now - started;
         setRotation({
-          yaw: initialRotation.yaw + elapsed * .00007,
-          pitch: initialRotation.pitch + Math.sin(elapsed * .00022) * .12,
+          yaw: initialRotation.yaw + elapsed * .000018,
+          pitch: initialRotation.pitch + Math.sin(elapsed * .000055) * .12,
         });
         lastUpdate = now;
       }
