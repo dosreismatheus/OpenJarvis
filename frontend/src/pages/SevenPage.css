@@ -217,7 +217,7 @@
 }
 .seven-avatar-wrap .seven-orb-stage-ready {
   transform: scale(.9);
-  opacity: .9;
+  opacity: .4;
 }
 @media (prefers-reduced-motion: reduce) {
   .seven-avatar-wrap .seven-orb-stage { transition: none; }
