@@ -46,6 +46,8 @@ export function SevenPage() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const audioGainRef = useRef<GainNode | null>(null);
+  const audioAnalyserRef = useRef<AnalyserNode | null>(null);
+  const voiceCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrl = useRef<string | null>(null);
   const lastAudioRef = useRef<{ text: string; blob: Blob; decoded?: AudioBuffer } | null>(null);
@@ -78,6 +80,76 @@ export function SevenPage() {
     const container = scrollRef.current;
     if (container) container.scrollTop = container.scrollHeight;
   }, [messages, status]);
+  useEffect(() => {
+    const canvas = voiceCanvasRef.current;
+    const analyser = audioAnalyserRef.current;
+    if (status !== 'speaking' || !canvas || !analyser) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const spectrum = new Uint8Array(analyser.frequencyBinCount);
+    const energyIn = (minimum: number, maximum: number) => {
+      const binWidth = analyser.context.sampleRate / analyser.fftSize;
+      const first = Math.max(1, Math.floor(minimum / binWidth));
+      const last = Math.min(spectrum.length - 1, Math.ceil(maximum / binWidth));
+      let total = 0;
+      for (let bin = first; bin <= last; bin++) total += spectrum[bin];
+      return total / ((last - first + 1) * 255);
+    };
+    let low = 0;
+    let middle = 0;
+    let high = 0;
+    let frame = 0;
+    const draw = () => {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const scale = Math.min(window.devicePixelRatio || 1, 2);
+      if (canvas.width !== Math.round(width * scale) || canvas.height !== Math.round(height * scale)) {
+        canvas.width = Math.round(width * scale);
+        canvas.height = Math.round(height * scale);
+      }
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      context.clearRect(0, 0, width, height);
+      analyser.getByteFrequencyData(spectrum);
+
+      low = low * 0.72 + energyIn(85, 450) * 0.28;
+      middle = middle * 0.72 + energyIn(450, 2200) * 0.28;
+      high = high * 0.72 + energyIn(2200, 6500) * 0.28;
+      const size = Math.min(width, height);
+      context.translate(width / 2, height / 2);
+      context.globalCompositeOperation = 'lighter';
+      const glow = (x: number, y: number, radius: number, red: number, green: number, blue: number, strength: number) => {
+        const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
+        gradient.addColorStop(0, `rgba(${red}, ${green}, ${blue}, ${strength})`);
+        gradient.addColorStop(0.45, `rgba(${red}, ${green}, ${blue}, ${strength * 0.38})`);
+        gradient.addColorStop(1, `rgba(${red}, ${green}, ${blue}, 0)`);
+        context.fillStyle = gradient;
+        context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      };
+      const drift = Math.sin(performance.now() * 0.0012) * size * 0.035;
+      glow(0, 0, size * (0.46 + low * 0.045), 195, 10, 32, 0.48 + low * 0.48);
+      glow(-size * 0.13 + drift, size * 0.08, size * (0.37 + middle * 0.055), 255, 35, 53, 0.3 + middle * 0.7);
+      glow(size * 0.15, -size * 0.1 - drift, size * (0.36 + high * 0.05), 255, 93, 105, 0.22 + high * 0.68);
+      const time = performance.now() * 0.001;
+      const bands = [low, middle, high];
+      for (let plume = 0; plume < 7; plume++) {
+        const energy = bands[plume % bands.length];
+        const angle = plume * 2.4 + Math.sin(time * 0.41 + plume * 1.7) * 0.16;
+        const reach = size * (0.2 + Math.sin(time * 0.67 + plume * 2.1) * 0.035);
+        const x = Math.cos(angle) * reach;
+        const y = Math.sin(angle) * reach;
+        glow(x, y, size * (0.2 + energy * 0.075), 255, 31 + plume * 6, 45 + plume * 7, 0.17 + energy * 0.55);
+      }
+      frame = window.requestAnimationFrame(draw);
+    };
+    draw();
+    return () => {
+      window.cancelAnimationFrame(frame);
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    };
+  }, [status]);
 
   const unlockAudio = () => {
     if (!window.AudioContext) return;
@@ -101,6 +173,8 @@ export function SevenPage() {
     source?.disconnect();
     audioGainRef.current?.disconnect();
     audioGainRef.current = null;
+    audioAnalyserRef.current?.disconnect();
+    audioAnalyserRef.current = null;
     audioRef.current?.pause();
     audioRef.current = null;
     if (audioUrl.current) { URL.revokeObjectURL(audioUrl.current); audioUrl.current = null; }
@@ -138,16 +212,23 @@ export function SevenPage() {
         source.buffer = decoded;
         const gain = context.createGain();
         gain.gain.value = 1.8;
+        const analyser = context.createAnalyser();
+        analyser.fftSize = 1024;
+        analyser.smoothingTimeConstant = 0.75;
         source.connect(gain);
-        gain.connect(context.destination);
+        gain.connect(analyser);
+        analyser.connect(context.destination);
         audioSourceRef.current = source;
         audioGainRef.current = gain;
+        audioAnalyserRef.current = analyser;
         source.onended = () => {
           if (audioSourceRef.current === source) {
             audioSourceRef.current = null;
             source.disconnect();
             gain.disconnect();
+            analyser.disconnect();
             audioGainRef.current = null;
+            audioAnalyserRef.current = null;
             voiceAbort.current = null;
             setStatus('ready');
           }
@@ -279,29 +360,32 @@ export function SevenPage() {
       </aside>
       <section className="seven-conversation" aria-label="Conversa com Seven">
         <div className="seven-intro">
-          <div ref={orbRef} className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
-            <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
-              <defs>
-                <filter id="seven-orb-red-cutout" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
-                  <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
-                  <feComponentTransfer in="gray" result="red-palette">
-                    <feFuncR type="linear" slope="2" />
-                    <feFuncG type="linear" slope="2.1" intercept="-1" />
-                    <feFuncB type="linear" slope="2.3" intercept="-1.2" />
-                  </feComponentTransfer>
-                  <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="light" />
-                  <feComponentTransfer in="light" result="visible-light">
-                    <feFuncA type="linear" slope="4.4" intercept="-0.65" />
-                  </feComponentTransfer>
-                  <feComposite in="red-palette" in2="visible-light" operator="in" />
-                </filter>
-              </defs>
-            </svg>
-            <span className="seven-orb-art seven-orb-art-rest" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-band" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-clock-ticks" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-a" aria-hidden="true" />
-            <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-b" aria-hidden="true" />
+          <div className={`seven-orb-stage seven-orb-stage-${status}`}>
+            <canvas ref={voiceCanvasRef} className="seven-orb-voice" aria-hidden="true" />
+            <div ref={orbRef} className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
+              <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
+                <defs>
+                  <filter id="seven-orb-red-cutout" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
+                    <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
+                    <feComponentTransfer in="gray" result="red-palette">
+                      <feFuncR type="linear" slope="2" />
+                      <feFuncG type="linear" slope="2.1" intercept="-1" />
+                      <feFuncB type="linear" slope="2.3" intercept="-1.2" />
+                    </feComponentTransfer>
+                    <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="light" />
+                    <feComponentTransfer in="light" result="visible-light">
+                      <feFuncA type="linear" slope="4.4" intercept="-0.65" />
+                    </feComponentTransfer>
+                    <feComposite in="red-palette" in2="visible-light" operator="in" />
+                  </filter>
+                </defs>
+              </svg>
+              <span className="seven-orb-art seven-orb-art-rest" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-band" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-clock-ticks" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-a" aria-hidden="true" />
+              <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-b" aria-hidden="true" />
+            </div>
           </div>
           <p className="seven-eyebrow">SEVEN · ASSISTENTE DA 7BUILD</p>
           <h1>{messages.length ? stateLabel : <>À disposição, <em>{profile?.address || 'senhor'}.</em></>}</h1>

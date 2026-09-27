@@ -34,10 +34,11 @@ export function useSevenOrbMotion(status: OrbStatus) {
 
   useLayoutEffect(() => {
     const orb = orbRef.current;
-    if (!orb || (status === 'ready' && mode.current === 'default')) return;
+    const isDefaultMotion = status === 'ready' || status === 'speaking';
+    if (!orb || (isDefaultMotion && mode.current === 'default')) return;
     if (status !== 'thinking' && (mode.current === 'exit-spinning' || mode.current === 'settling')) return;
     if (status !== 'thinking' && mode.current === 'holding') {
-      if (status === 'ready') {
+      if (isDefaultMotion) {
         orb.querySelectorAll<HTMLElement>('.seven-orb-art').forEach((element) => {
           element.style.transform = '';
           element.style.animation = '';
@@ -65,10 +66,10 @@ export function useSevenOrbMotion(status: OrbStatus) {
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       frozen.forEach(({ element }) => {
-        element.style.transform = status === 'ready' ? '' : 'rotate(0deg)';
-        if (status === 'ready') element.style.animation = '';
+        element.style.transform = isDefaultMotion ? '' : 'rotate(0deg)';
+        if (isDefaultMotion) element.style.animation = '';
       });
-      mode.current = status === 'thinking' ? 'thinking' : status === 'ready' ? 'default' : 'holding';
+      mode.current = status === 'thinking' ? 'thinking' : isDefaultMotion ? 'default' : 'holding';
       return;
     }
 
@@ -136,7 +137,7 @@ export function useSevenOrbMotion(status: OrbStatus) {
     void Promise.all(reset).then(() => {
       if (generation.current !== token) return;
       if (currentStatus.current !== 'thinking') {
-        if (currentStatus.current === 'ready') {
+        if (currentStatus.current === 'ready' || currentStatus.current === 'speaking') {
           frozen.forEach(({ element }) => {
             element.style.transform = '';
             element.style.animation = '';

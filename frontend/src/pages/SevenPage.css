@@ -37,10 +37,18 @@
 @media(max-width:760px){.seven-squads-link{width:38px;padding:0}.seven-squads-link span{display:none}}
 
 /* The supplied artwork supplies every ring, segment and particle. */
-.seven-orb {
+.seven-orb-stage {
   width: clamp(300px, 50vh, 470px);
   height: clamp(300px, 50vh, 470px);
   margin: clamp(18px, 3vh, 28px) auto 12px;
+  position: relative;
+  isolation: isolate;
+}
+.seven-orb {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  z-index: 1;
   overflow: hidden;
   isolation: isolate;
   border: 0;
@@ -53,6 +61,18 @@
 }
 .seven-orb::before, .seven-orb::after { display: none; }
 .seven-orb-filter { position: absolute; width: 0; height: 0; overflow: hidden; }
+.seven-orb-voice {
+  position: absolute;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(14px) brightness(1.35) saturate(1.25);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.seven-orb-stage-speaking .seven-orb-voice { opacity: 1; }
 .seven-orb-art {
   position: absolute;
   inset: 0;
@@ -72,7 +92,7 @@
   mask-repeat: no-repeat;
   -webkit-mask-composite: xor, xor, xor;
   mask-composite: exclude, exclude, exclude;
-  z-index: 3;
+  z-index: 4;
   transform-origin: 48.93% 49.54%;
   animation: sevenRotate 80s linear infinite;
 }
@@ -85,7 +105,7 @@
   mask-position: center;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  z-index: 2;
+  z-index: 3;
   transform-origin: 48.93% 49.54%;
   animation: sevenRotate 323.8s linear infinite reverse;
 }
@@ -98,7 +118,7 @@
   mask-position: center;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  z-index: 1;
+  z-index: 2;
   transform-origin: 48.93% 49.54%;
   animation: sevenRotate 228.57s linear infinite;
 }
@@ -111,7 +131,7 @@
   mask-repeat: no-repeat;
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
-  z-index: 0;
+  z-index: 1;
   transform-origin: 48.93% 49.54%;
   animation: sevenRotate 420s linear infinite reverse;
 }
@@ -124,7 +144,7 @@
   mask-image: url('/seven/orb-outer-mask.png'), conic-gradient(from 45deg, transparent 0deg 180deg, #000 180deg 360deg);
 }
 @media (max-width: 760px) {
-  .seven-orb {
+  .seven-orb-stage {
     width: min(66vw, 300px);
     height: min(66vw, 300px);
     margin: 8px auto 8px;
