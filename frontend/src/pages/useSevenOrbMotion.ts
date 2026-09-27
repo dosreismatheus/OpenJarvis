@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 
 type OrbStatus = 'ready' | 'thinking' | 'preparing' | 'speaking';
+const isProcessing = (status: OrbStatus) => status === 'thinking' || status === 'preparing';
 type Ring = { selector: string; defaultTurnMs: number; thinkingTurnMs: number; entrySpinMs: number; exitSpinMs: number; role: 'outer' | 'clock' | 'band' | 'interior' };
 
 const rings: Ring[] = [
@@ -36,8 +37,10 @@ export function useSevenOrbMotion(status: OrbStatus) {
     const orb = orbRef.current;
     const isDefaultMotion = status === 'ready' || status === 'speaking';
     if (!orb || (isDefaultMotion && mode.current === 'default')) return;
-    if (status !== 'thinking' && (mode.current === 'exit-spinning' || mode.current === 'settling')) return;
-    if (status !== 'thinking' && mode.current === 'holding') {
+    // Voice synthesis continues the same processing motion after the text response.
+    if (isProcessing(status) && (mode.current === 'entering' || mode.current === 'thinking')) return;
+    if (!isProcessing(status) && (mode.current === 'exit-spinning' || mode.current === 'settling')) return;
+    if (!isProcessing(status) && mode.current === 'holding') {
       if (isDefaultMotion) {
         orb.querySelectorAll<HTMLElement>('.seven-orb-art').forEach((element) => {
           element.style.transform = '';
@@ -51,8 +54,8 @@ export function useSevenOrbMotion(status: OrbStatus) {
     const layers = rings.map((ring) => ({ ring, element: orb.querySelector<HTMLElement>(ring.selector) }));
     if (layers.some(({ element }) => !element)) return;
     const token = ++generation.current;
-    const enteringThinking = status === 'thinking';
-    const leavingThinking = status !== 'thinking' && (mode.current === 'thinking' || mode.current === 'entering');
+    const enteringThinking = isProcessing(status);
+    const leavingThinking = !isProcessing(status) && (mode.current === 'thinking' || mode.current === 'entering');
 
     // Read every live angle before stopping any animation, then hold each layer
     // at that exact position while the transition to the reference pose runs.
@@ -69,7 +72,7 @@ export function useSevenOrbMotion(status: OrbStatus) {
         element.style.transform = isDefaultMotion ? '' : 'rotate(0deg)';
         if (isDefaultMotion) element.style.animation = '';
       });
-      mode.current = status === 'thinking' ? 'thinking' : isDefaultMotion ? 'default' : 'holding';
+      mode.current = isProcessing(status) ? 'thinking' : isDefaultMotion ? 'default' : 'holding';
       return;
     }
 
@@ -79,7 +82,7 @@ export function useSevenOrbMotion(status: OrbStatus) {
       return animation;
     };
     const startThinkingRing = (ring: Ring, element: HTMLElement) => {
-      if (generation.current !== token || currentStatus.current !== 'thinking') return;
+      if (generation.current !== token || !isProcessing(currentStatus.current)) return;
       if (ring.role === 'interior') {
         track(element.animate(
           [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
@@ -133,10 +136,10 @@ export function useSevenOrbMotion(status: OrbStatus) {
       }).catch(() => {});
     });
 
-    mode.current = leavingThinking ? 'exit-spinning' : status === 'thinking' ? 'entering' : 'settling';
+    mode.current = leavingThinking ? 'exit-spinning' : isProcessing(status) ? 'entering' : 'settling';
     void Promise.all(reset).then(() => {
       if (generation.current !== token) return;
-      if (currentStatus.current !== 'thinking') {
+      if (!isProcessing(currentStatus.current)) {
         if (currentStatus.current === 'ready' || currentStatus.current === 'speaking') {
           frozen.forEach(({ element }) => {
             element.style.transform = '';

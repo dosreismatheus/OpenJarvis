@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { SEVEN_AREAS, type SevenNote } from '../lib/seven';
+import { type SevenNote } from '../lib/seven';
 
-type CloudPoint = { id: string; x: number; y: number; z: number; color: string; links: number };
+type CloudPoint = { id: string; x: number; y: number; z: number; links: number };
+const nodeColor = '#ef555d';
 
 export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,7 +21,6 @@ export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
         x: Math.cos(angle) * around * radius,
         y: Math.sin(angle) * around * radius * .9,
         z: vertical * radius,
-        color: SEVEN_AREAS[note.area]?.color || '#ef8a8d',
         links: note.links.length,
       };
     });
@@ -87,7 +87,7 @@ export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
       graph.points.forEach((point, index) => {
         const { x, y, depth } = projected[index];
         const visibility = Math.max(.55, Math.min(1, .76 + depth / 800));
-        context.fillStyle = point.color;
+        context.fillStyle = nodeColor;
         context.globalAlpha = visibility * .13;
         context.beginPath();
         context.arc(x, y, (5 + Math.min(point.links, 6) * .5) * factor, 0, Math.PI * 2);
