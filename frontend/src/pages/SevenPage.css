@@ -68,13 +68,13 @@
   height: 140%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(18px) saturate(1.1);
+  filter: blur(22px);
   -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 40%, #000 53%);
   mask-image: radial-gradient(circle closest-side, transparent 0 40%, #000 53%);
   opacity: 0;
   transition: opacity .3s ease;
 }
-.seven-orb-stage-speaking .seven-orb-voice { opacity: .55; }
+.seven-orb-stage-speaking .seven-orb-voice { opacity: .28; }
 .seven-orb-art {
   position: absolute;
   inset: 0;
