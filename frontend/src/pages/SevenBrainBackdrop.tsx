@@ -86,16 +86,15 @@ export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
 
       graph.points.forEach((point, index) => {
         const { x, y, depth } = projected[index];
-        const simulated = point.id.startsWith('preview-node-');
         const visibility = Math.max(.55, Math.min(1, .76 + depth / 800));
         context.fillStyle = point.color;
         context.globalAlpha = visibility * .13;
         context.beginPath();
-        context.arc(x, y, (simulated ? 2.4 : 5 + Math.min(point.links, 6) * .5) * factor, 0, Math.PI * 2);
+        context.arc(x, y, (5 + Math.min(point.links, 6) * .5) * factor, 0, Math.PI * 2);
         context.fill();
         context.globalAlpha = visibility;
         context.beginPath();
-        context.arc(x, y, (simulated ? 1 : 2 + Math.min(point.links, 6) * .22) * factor, 0, Math.PI * 2);
+        context.arc(x, y, (2 + Math.min(point.links, 6) * .22) * factor, 0, Math.PI * 2);
         context.fill();
       });
       context.globalAlpha = 1;
