@@ -102,6 +102,8 @@ export function SevenPage() {
     let middle = 0;
     let high = 0;
     let frame = 0;
+    let flickerPhase = 0;
+    let previousFrame = performance.now();
     const draw = () => {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
@@ -117,6 +119,13 @@ export function SevenPage() {
       low = low * 0.72 + energyIn(85, 450) * 0.28;
       middle = middle * 0.72 + energyIn(450, 2200) * 0.28;
       high = high * 0.72 + energyIn(2200, 6500) * 0.28;
+      const now = performance.now();
+      const fastFlicker = Math.floor(now / 1250) % 2 === 0;
+      flickerPhase += Math.min(now - previousFrame, 100) * (fastFlicker ? 3.2 : .85) * Math.PI * 2 / 1000;
+      previousFrame = now;
+      const flicker = (Math.sin(flickerPhase) + 1) / 2;
+      const voiceEnergy = Math.min(1, low + middle + high);
+      canvas.style.opacity = String(.08 + flicker * (.025 + voiceEnergy * .015));
       const size = Math.min(width, height);
       context.translate(width / 2, height / 2);
       context.globalCompositeOperation = 'lighter';
@@ -147,6 +156,7 @@ export function SevenPage() {
     draw();
     return () => {
       window.cancelAnimationFrame(frame);
+      canvas.style.opacity = '';
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
