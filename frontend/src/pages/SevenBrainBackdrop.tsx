@@ -75,7 +75,7 @@ export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
         return { x: width / 2 + rotatedX * perspective * factor, y: height / 2 + rotatedY * perspective * factor, depth };
       });
 
-      context.lineWidth = Math.max(.55, .9 * factor);
+      context.lineWidth = Math.max(.35, .5 * factor);
       context.strokeStyle = 'rgba(242, 113, 121, .26)';
       context.beginPath();
       graph.links.forEach(([source, target]) => {
@@ -90,11 +90,11 @@ export function SevenBrainBackdrop({ notes }: { notes: SevenNote[] }) {
         context.fillStyle = nodeColor;
         context.globalAlpha = visibility * .13;
         context.beginPath();
-        context.arc(x, y, (5 + Math.min(point.links, 6) * .5) * factor, 0, Math.PI * 2);
+        context.arc(x, y, (3 + Math.min(point.links, 6) * .25) * factor, 0, Math.PI * 2);
         context.fill();
         context.globalAlpha = visibility;
         context.beginPath();
-        context.arc(x, y, (2 + Math.min(point.links, 6) * .22) * factor, 0, Math.PI * 2);
+        context.arc(x, y, (1.25 + Math.min(point.links, 6) * .1) * factor, 0, Math.PI * 2);
         context.fill();
       });
       context.globalAlpha = 1;
