@@ -1,16 +1,14 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowUp, BrainCircuit, Boxes, ChevronRight, CircleStop, Cpu, LoaderCircle, Settings2, Volume2, X, NotebookPen, AudioLines, Clock3 } from 'lucide-react';
+import { ArrowUp, BrainCircuit, Boxes, ChevronRight, CircleStop, Cpu, Settings2 } from 'lucide-react';
 import { useAppStore } from '../lib/store';
 import { streamChat } from '../lib/sse';
 import {
   getSevenProfile, rememberSevenTurn, sevenIsIdentityQuestion, sevenRequestsFamilyGoal, sevenSystemPrompt,
-  speakSeven, stripAndCollectMemories, sevenVoiceGender,
+  speakSeven, stripAndCollectMemories,
   type SevenProfile,
 } from '../lib/seven';
 import './SevenPage.css';
-import { useSevenOrbMotion } from './useSevenOrbMotion';
-import { SevenBrainBackdrop } from './SevenBrainBackdrop';
 
 type ChatItem = { id: string; role: 'user' | 'assistant'; text: string };
 const CHAT_KEY = 'seven-chat-v1';
@@ -36,12 +34,10 @@ export function SevenPage() {
   const [messages, setMessages] = useState<ChatItem[]>(loadChat);
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState<'ready' | 'thinking' | 'preparing' | 'speaking'>('ready');
-  const orbRef = useSevenOrbMotion(status);
   const [error, setError] = useState('');
   const [brainSync, setBrainSync] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [replayReady, setReplayReady] = useState(false);
+  const [, setReplayReady] = useState(false);
   const [now, setNow] = useState(() => new Date());
-  const scrollRef = useRef<HTMLDivElement>(null);
   const chatAbort = useRef<AbortController | null>(null);
   const voiceAbort = useRef<AbortController | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -77,10 +73,7 @@ export function SevenPage() {
     const timer = window.setInterval(refresh, 30000);
     return () => { window.removeEventListener('focus', refresh); window.clearInterval(timer); };
   }, [status]);
-  useLayoutEffect(() => {
-    const container = scrollRef.current;
-    if (container) container.scrollTop = container.scrollHeight;
-  }, [messages, status]);
+
   useEffect(() => {
     const canvas = voiceCanvasRef.current;
     const analyser = audioAnalyserRef.current;
@@ -347,9 +340,6 @@ export function SevenPage() {
     chatAbort.current?.abort(); stopVoice();
     if (status === 'thinking') setStatus('ready');
   };
-  const readyLabel = sevenVoiceGender(profile?.voice_id || '') === 'masculine' ? 'Pronto' : 'Pronta';
-  const stateLabel = status === 'thinking' ? 'PROCESSANDO' : status === 'preparing' ? 'PREPARANDO VOZ' : status === 'speaking' ? 'FALANDO' : readyLabel.toUpperCase();
-  const lastAnswer = [...messages].reverse().find((item) => item.role === 'assistant' && item.text)?.text;
 
   return <div className="seven-shell">
     <div className="seven-noise" aria-hidden="true" />
@@ -364,61 +354,18 @@ export function SevenPage() {
       </div>
     </header>
 
-    <main className="seven-main">
-      <aside className="seven-hud seven-hud-left" aria-label="Estado do sistema">
-        <div className="seven-hud-card"><span className="seven-hud-heading">SISTEMA</span><div className="seven-hud-row"><span><i className="seven-state-dot" /> Seven</span><strong>{stateLabel.toLowerCase()}</strong></div><div className="seven-hud-row"><span><Cpu size={13} /> Modelo</span><strong>{selectedModel || serverInfo?.model || 'Padrão'}</strong></div><div className="seven-hud-row"><span><AudioLines size={13} /> Voz</span><strong>{profile?.voice_enabled ? 'Ativada' : 'Desativada'}</strong></div></div>
-        <div className="seven-hud-card"><span className="seven-hud-heading">CONTEXTO</span><p>Suas notas ficam no Segundo Cérebro e podem ser editadas a qualquer momento.</p><Link to="/brain/notes"><NotebookPen size={14} /> {profile?.notes.length ?? 0} notas <ChevronRight size={13} /></Link></div>
-      </aside>
-      <section className="seven-conversation" aria-label="Conversa com Seven">
-        <div className="seven-intro">
-          <div className={`seven-orb-stage seven-orb-stage-${status}`}>
-            <SevenBrainBackdrop notes={profile?.notes ?? []} />
-            <canvas ref={voiceCanvasRef} className="seven-orb-voice" aria-hidden="true" />
-            <div ref={orbRef} className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
-              <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
-                <defs>
-                  <filter id="seven-orb-red-cutout" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
-                    <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
-                    <feComponentTransfer in="gray" result="red-palette">
-                      <feFuncR type="linear" slope="2" />
-                      <feFuncG type="linear" slope="2.1" intercept="-1" />
-                      <feFuncB type="linear" slope="2.3" intercept="-1.2" />
-                    </feComponentTransfer>
-                    <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="light" />
-                    <feComponentTransfer in="light" result="visible-light">
-                      <feFuncA type="linear" slope="4.4" intercept="-0.65" />
-                    </feComponentTransfer>
-                    <feComposite in="red-palette" in2="visible-light" operator="in" />
-                  </filter>
-                </defs>
-              </svg>
-              <span className="seven-orb-art seven-orb-art-rest" aria-hidden="true" />
-              <span className="seven-orb-art seven-orb-band" aria-hidden="true" />
-              <span className="seven-orb-art seven-orb-clock-ticks" aria-hidden="true" />
-              <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-a" aria-hidden="true" />
-              <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-b" aria-hidden="true" />
-            </div>
+    <main className="seven-main seven-main-minimal">
+      <section className="seven-conversation seven-conversation-minimal" aria-label="Conversa com Seven">
+        <form className="seven-composer seven-composer-minimal" onSubmit={(event) => { event.preventDefault(); void submit(); }}>
+          <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void submit(); } }} placeholder={error || "Escreva para o Seven..."} rows={2} aria-label="Mensagem para o Seven" aria-invalid={!!error} />
+          <div className="seven-composer-bottom seven-composer-actions">
+            <span className="seven-visually-hidden" role="status">{status === 'thinking' || status === 'preparing' ? 'Processando' : status === 'speaking' ? 'Falando' : ''}</span>
+            <div>{status !== 'ready' && <button type="button" className="seven-stop" onClick={stop} title="Parar" aria-label="Parar"><CircleStop size={19} /></button>}<button type="submit" className="seven-send" disabled={!draft.trim() || status === 'thinking' || !profile} title="Enviar" aria-label="Enviar"><ArrowUp size={19} /></button></div>
           </div>
-          <p className="seven-eyebrow">SEVEN · ASSISTENTE DA 7BUILD</p>
-          <h1>{messages.length ? stateLabel : <>À disposição, <em>{profile?.address || 'senhor'}.</em></>}</h1>
-          <p>{messages.length ? 'Sua conversa continua abaixo.' : 'Escreva sua mensagem. O Seven responde com o contexto que você escolher.'}</p>
-        </div>
-        <div className="seven-messages" ref={scrollRef}>
-          {messages.length === 0 && <div className="seven-empty"><span className="seven-empty-line" />{readyLabel} para a primeira conversa.</div>}
-          {messages.map((item) => <article key={item.id} className={`seven-message seven-message-${item.role}`}>
-            <div className="seven-message-avatar">{item.role === 'assistant' ? <img src="/seven/7build-mark.svg" alt="" /> : 'M'}</div>
-            <div className="seven-message-body"><div className="seven-message-meta">{item.role === 'assistant' ? (profile?.name || 'Seven') : 'Matheus'}{item.role === 'assistant' && item.text && <button type="button" onClick={() => { unlockAudio(); void playAnswer(item.text); }} title="Ouvir resposta"><Volume2 size={14} /></button>}</div><p>{item.text || <span className="seven-dots">Aguarde<span>.</span><span>.</span><span>.</span></span>}</p></div>
-          </article>)}
-        </div>
-        {error && <div className="seven-error" role="alert">{error}<button type="button" onClick={() => setError('')}><X size={14} /></button></div>}
-        {replayReady && lastAudioRef.current && <div className="seven-audio-fallback"><button type="button" onClick={() => { unlockAudio(); void playAnswer(lastAudioRef.current!.text); }}><Volume2 size={15} /> Ouvir novamente</button></div>}
-        <form className="seven-composer" onSubmit={(event) => { event.preventDefault(); void submit(); }}>
-          <textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void submit(); } }} placeholder="Escreva para o Seven..." rows={2} aria-label="Mensagem para o Seven" />
-          <div className="seven-composer-bottom"><span>{status === 'thinking' ? <><LoaderCircle size={13} className="seven-spin" /> Processando</> : status === 'preparing' ? <><LoaderCircle size={13} className="seven-spin" /> Preparando voz</> : status === 'speaking' ? <><Volume2 size={13} /> Falando</> : <><span className="seven-online-dot" /> {readyLabel} · entrada por texto</>}</span><div>{status !== 'ready' && <button type="button" className="seven-stop" onClick={stop} title="Parar"><CircleStop size={19} /></button>}<button type="submit" className="seven-send" disabled={!draft.trim() || status === 'thinking' || !profile} title="Enviar"><ArrowUp size={19} /></button></div></div>
         </form>
-        <div className="seven-composer-hint">Enter envia · Shift + Enter quebra linha · <button type="button" onClick={() => { const empty: ChatItem[] = []; setMessages(empty); saveChat(empty); stop(); }}>Limpar conversa</button>{brainSync !== 'idle' && <> · <span role="status">{brainSync === 'saving' ? 'Salvando no Segundo Cérebro...' : brainSync === 'saved' ? 'Segundo Cérebro atualizado' : 'Falha ao salvar no Segundo Cérebro'}</span></>}</div>
+        <span className="seven-visually-hidden" role="alert">{error}</span>
+        <span className="seven-visually-hidden" role="status">{brainSync === 'saving' ? 'Salvando no Segundo Cérebro' : brainSync === 'saved' ? 'Segundo Cérebro atualizado' : brainSync === 'error' ? 'Falha ao salvar no Segundo Cérebro' : ''}</span>
       </section>
-      <aside className="seven-hud seven-hud-right" aria-label="Atividade recente"><div className="seven-hud-card"><span className="seven-hud-heading">ATIVIDADE</span><div className="seven-hud-row"><span><Clock3 size={13} /> Última resposta</span><strong>{lastAnswer ? 'Disponível' : 'Aguardando'}</strong></div><p>{lastAnswer ? `${lastAnswer.slice(0, 180)}${lastAnswer.length > 180 ? '…' : ''}` : 'A conversa começa quando o senhor enviar uma mensagem.'}</p></div><div className="seven-hud-foot">ENTRADA POR TEXTO <span>·</span> RESPOSTA POR VOZ {profile?.voice_enabled ? 'ATIVA' : 'DESATIVADA'}</div></aside>
     </main>
   </div>;
 }
