@@ -68,11 +68,11 @@
   height: 140%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(14px) brightness(1.35) saturate(1.25);
+  filter: blur(18px) saturate(1.1);
   opacity: 0;
   transition: opacity .3s ease;
 }
-.seven-orb-stage-speaking .seven-orb-voice { opacity: 1; }
+.seven-orb-stage-speaking .seven-orb-voice { opacity: .55; }
 .seven-orb-art {
   position: absolute;
   inset: 0;
