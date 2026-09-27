@@ -9,6 +9,7 @@ import {
   type SevenProfile,
 } from '../lib/seven';
 import './SevenPage.css';
+import { useSevenOrbMotion } from './useSevenOrbMotion';
 
 type ChatItem = { id: string; role: 'user' | 'assistant'; text: string };
 const CHAT_KEY = 'seven-chat-v1';
@@ -34,6 +35,7 @@ export function SevenPage() {
   const [messages, setMessages] = useState<ChatItem[]>(loadChat);
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState<'ready' | 'thinking' | 'preparing' | 'speaking'>('ready');
+  const orbRef = useSevenOrbMotion(status);
   const [error, setError] = useState('');
   const [brainSync, setBrainSync] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [replayReady, setReplayReady] = useState(false);
@@ -277,7 +279,7 @@ export function SevenPage() {
       </aside>
       <section className="seven-conversation" aria-label="Conversa com Seven">
         <div className="seven-intro">
-          <div className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
+          <div ref={orbRef} className={`seven-orb seven-orb-${status}`} role="img" aria-label={`Estado do Seven: ${stateLabel.toLowerCase()}`}>
             <svg className="seven-orb-filter" aria-hidden="true" focusable="false">
               <defs>
                 <filter id="seven-orb-red-cutout" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
@@ -295,7 +297,11 @@ export function SevenPage() {
                 </filter>
               </defs>
             </svg>
-            <span className="seven-orb-art" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-art-rest" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-band" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-clock-ticks" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-a" aria-hidden="true" />
+            <span className="seven-orb-art seven-orb-outer-half seven-orb-outer-half-b" aria-hidden="true" />
           </div>
           <p className="seven-eyebrow">SEVEN · ASSISTENTE DA 7BUILD</p>
           <h1>{messages.length ? stateLabel : <>À disposição, <em>{profile?.address || 'senhor'}.</em></>}</h1>

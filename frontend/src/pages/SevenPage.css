@@ -61,6 +61,68 @@
   filter: url(#seven-orb-red-cutout);
   animation: none;
 }
+.seven-orb-art-rest {
+  -webkit-mask-image: linear-gradient(#000, #000), url('/seven/orb-outer-mask.png'), url('/seven/orb-clock-ticks-mask.svg'), url('/seven/orb-band-exact-mask.png');
+  mask-image: linear-gradient(#000, #000), url('/seven/orb-outer-mask.png'), url('/seven/orb-clock-ticks-mask.svg'), url('/seven/orb-band-exact-mask.png');
+  -webkit-mask-size: 100% 100%, auto 100%, auto 100%, auto 100%;
+  mask-size: 100% 100%, auto 100%, auto 100%, auto 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: xor, xor, xor;
+  mask-composite: exclude, exclude, exclude;
+  z-index: 3;
+  transform-origin: 48.93% 49.54%;
+  animation: sevenRotate 80s linear infinite;
+}
+.seven-orb-band {
+  -webkit-mask-image: url('/seven/orb-band-exact-mask.png');
+  mask-image: url('/seven/orb-band-exact-mask.png');
+  -webkit-mask-size: auto 100%;
+  mask-size: auto 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  z-index: 2;
+  transform-origin: 48.93% 49.54%;
+  animation: sevenRotate 323.8s linear infinite reverse;
+}
+.seven-orb-clock-ticks {
+  -webkit-mask-image: url('/seven/orb-clock-ticks-mask.svg');
+  mask-image: url('/seven/orb-clock-ticks-mask.svg');
+  -webkit-mask-size: auto 100%;
+  mask-size: auto 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  z-index: 1;
+  transform-origin: 48.93% 49.54%;
+  animation: sevenRotate 228.57s linear infinite;
+}
+.seven-orb-outer-half {
+  -webkit-mask-size: auto 100%, 100% 100%;
+  mask-size: auto 100%, 100% 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  z-index: 0;
+  transform-origin: 48.93% 49.54%;
+  animation: sevenRotate 420s linear infinite reverse;
+}
+.seven-orb-outer-half-a {
+  -webkit-mask-image: url('/seven/orb-outer-mask.png'), conic-gradient(from 45deg, #000 0deg 180deg, transparent 180deg 360deg);
+  mask-image: url('/seven/orb-outer-mask.png'), conic-gradient(from 45deg, #000 0deg 180deg, transparent 180deg 360deg);
+}
+.seven-orb-outer-half-b {
+  -webkit-mask-image: url('/seven/orb-outer-mask.png'), conic-gradient(from 45deg, transparent 0deg 180deg, #000 180deg 360deg);
+  mask-image: url('/seven/orb-outer-mask.png'), conic-gradient(from 45deg, transparent 0deg 180deg, #000 180deg 360deg);
+}
 @media (max-width: 760px) {
   .seven-orb {
     width: min(66vw, 300px);
