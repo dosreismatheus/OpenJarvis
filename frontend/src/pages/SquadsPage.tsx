@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { ArrowLeft, ArrowUpRight, BookOpen, Boxes, ChevronRight, GitBranch, Plus, RefreshCw, Server, ShieldCheck, Trash2, Users, X } from 'lucide-react';
-import { addSquad, getSquadBrain, listSquads, removeSquad, resumeSquadRequest, reviewSquadRequest, saveSquadBrainNote, sendSquadRequest, type SquadBrainNote, type SquadConnection, type SquadAgent, type SquadCard } from '../lib/squads';
+import { addSquad, getSquadBrain, getSquadCodexLogin, listSquads, removeSquad, resumeSquadRequest, reviewSquadRequest, saveSquadBrainNote, sendSquadRequest, startSquadCodexLogin, type SquadBrainNote, type SquadCodexLogin, type SquadConnection, type SquadAgent, type SquadCard, type SquadSnapshot } from '../lib/squads';
 import { SquadBrainMap } from '../components/SquadBrainMap';
 import './SquadsPage.css';
 
@@ -50,6 +50,21 @@ function CardDetailsDialog({ card, columns, agents, notes, onClose }: {
   </div>;
 }
 
+function SquadSetupPanel({ snapshot, login, loginError, starting, onStart }: {
+  snapshot: SquadSnapshot;
+  login: SquadCodexLogin | null;
+  loginError: string;
+  starting: boolean;
+  onStart: () => void;
+}) {
+  const repoPending = snapshot.repository_setup === 'awaiting_choice' || !snapshot.repository;
+  const loginStatus = login?.status === 'authenticated' ? 'Autenticado' : login?.status === 'pending' ? 'Aguardando autorização' : login ? 'Login necessário' : 'Consultando';
+  return <div className="squads-setup-grid">
+    {repoPending && <section className="squads-setup-card"><GitBranch size={18} /><div><strong>Repositório pendente</strong><p>A empresa já tem um repositório para este projeto? Responda ao Seven no chat para vincular o existente ou criar um privado na organização 7build-tech.</p></div></section>}
+    {login?.status !== 'not_applicable' && <section className="squads-setup-card squads-codex-login"><Server size={18} /><div><strong>Codex CLI · {loginStatus}</strong><p>{login?.status === 'authenticated' ? 'A conta ChatGPT está pronta para os agentes desta squad.' : 'Autorize a CLI desta squad com um código de uso único da sua conta ChatGPT.'}</p>{login?.status === 'pending' && login.instructions && <><a href="https://auth.openai.com/codex/device" target="_blank" rel="noreferrer">Abrir página oficial de autorização <ArrowUpRight size={14} /></a><pre>{login.instructions}</pre></>}{loginError && <p className="squads-codex-error" role="alert">{loginError}</p>}</div>{login && login.status !== 'authenticated' && login.status !== 'pending' && <button type="button" className="squads-primary" disabled={starting} onClick={onStart}>{starting ? 'Iniciando...' : 'Gerar código'}</button>}</section>}
+  </div>;
+}
+
 export function SquadsPage() {
   const { squadId } = useParams();
   const navigate = useNavigate();
@@ -62,6 +77,9 @@ export function SquadsPage() {
   const [request, setRequest] = useState({ title: '', details: '' });
   const [requestStatus, setRequestStatus] = useState('');
   const [brainNotes, setBrainNotes] = useState<SquadBrainNote[]>([]);
+  const [codexLogin, setCodexLogin] = useState<SquadCodexLogin | null>(null);
+  const [codexLoginError, setCodexLoginError] = useState('');
+  const [startingCodexLogin, setStartingCodexLogin] = useState(false);
   const [brainError, setBrainError] = useState('');
   const [brainQuery, setBrainQuery] = useState('');
   const [selectedNote, setSelectedNote] = useState('');
@@ -97,6 +115,31 @@ export function SquadsPage() {
     const timer = window.setInterval(() => { if (document.visibilityState === 'visible') void load(); }, 15000);
     return () => { active = false; window.clearInterval(timer); };
   }, [squadId]);
+
+  useEffect(() => {
+    if (!squadId) { setCodexLogin(null); return; }
+    let active = true;
+    let inFlight = false;
+    const load = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      try { const result = await getSquadCodexLogin(squadId); if (active) { setCodexLogin(result); setCodexLoginError(''); } }
+      catch (cause) { if (active) { setCodexLogin(null); setCodexLoginError(cause instanceof Error ? cause.message : 'Não foi possível consultar a CLI Codex.'); } }
+      finally { inFlight = false; }
+    };
+    setCodexLogin(null);
+    void load();
+    const timer = window.setInterval(() => { if (document.visibilityState === 'visible') void load(); }, 15000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [squadId]);
+
+  const startCodexLogin = async () => {
+    if (!squadId) return;
+    setStartingCodexLogin(true); setCodexLoginError('');
+    try { setCodexLogin(await startSquadCodexLogin(squadId)); }
+    catch (cause) { setCodexLoginError(cause instanceof Error ? cause.message : 'Não foi possível iniciar o login Codex.'); }
+    finally { setStartingCodexLogin(false); }
+  };
 
   const create = async (event: React.FormEvent) => {
     event.preventDefault(); setSaving(true); setError('');
@@ -163,6 +206,7 @@ export function SquadsPage() {
         !selected ? <div className="squads-empty">Squad não encontrada. <Link to="/squads">Ver todas</Link></div> : <>
           <div className="squads-detail-meta"><span className={`squads-connection ${selected.online ? 'is-online' : ''}`}><i /> {selected.online ? 'Servidor conectado' : 'Servidor indisponível'}</span><span><Server size={14} /> {selected.url}</span><button type="button" onClick={() => void remove(selected.id)} title="Desconectar squad"><Trash2 size={15} /> Desconectar</button></div>
           {!snapshot ? <div className="squads-empty"><Server size={25} /><strong>Não foi possível consultar esta squad.</strong><span>{selected.error || 'Confira o servidor e tente atualizar.'}</span></div> : <>
+            <SquadSetupPanel snapshot={snapshot} login={codexLogin} loginError={codexLoginError} starting={startingCodexLogin} onStart={() => void startCodexLogin()} />
             <div className="squads-links"><a href={safeLink(snapshot.repository)} target="_blank" rel="noreferrer"><GitBranch size={19} /><span>Repositório<strong>{snapshot.repository || 'Não configurado'}</strong></span><ArrowUpRight size={17} /></a><a href={safeLink(snapshot.environments.staging)} target="_blank" rel="noreferrer" aria-disabled={!safeLink(snapshot.environments.staging)}><Server size={19} /><span>Staging<strong>{snapshot.environments.staging || 'Ainda não configurado'}</strong></span><ArrowUpRight size={17} /></a><a href={safeLink(snapshot.environments.production)} target="_blank" rel="noreferrer" aria-disabled={!safeLink(snapshot.environments.production)}><ShieldCheck size={19} /><span>Produção<strong>{snapshot.environments.production || 'Ainda não configurado'}</strong></span><ArrowUpRight size={17} /></a></div>
             <form className="squads-request" onSubmit={(event) => void sendRequest(event)}><div><span className="squads-kicker">COMUNICAÇÃO COM A SQUAD</span><h2>Enviar demanda ao gestor</h2><p>O gestor receberá a demanda no backlog e coordenará os demais agentes.</p></div><div className="squads-request-fields"><input required maxLength={160} value={request.title} onChange={(event) => setRequest({ ...request, title: event.target.value })} placeholder="Título da demanda" aria-label="Título da demanda" /><textarea maxLength={4000} value={request.details} onChange={(event) => setRequest({ ...request, details: event.target.value })} placeholder="Contexto, objetivo e critérios de aceite" aria-label="Detalhes da demanda" rows={2} /><div><span role="status">{requestStatus}</span><button type="submit" className="squads-primary" disabled={saving || !request.title.trim()}>{saving ? 'Enviando...' : 'Enviar ao gestor'}</button></div></div></form>
             <section className="squads-section"><div className="squads-section-title"><h2><Users size={18} /> Agentes</h2><span>{snapshot.agents.filter((agent) => agent.status === 'working').length} trabalhando · {snapshot.agents.length} no total</span></div><div className="squads-agents">{snapshot.agents.map((agent) => <article key={agent.id} className="squads-agent"><div className="squads-agent-head"><div className="squads-agent-avatar">{agent.name.slice(0, 2).toUpperCase()}</div><div><h3>{agent.name}</h3><span>{agent.role}</span></div><span className={`squads-status status-${agent.status}`}><i /> {agentStatus[agent.status] || agent.status}</span></div><p>{agent.task || 'Nenhuma tarefa em andamento.'}</p>{agent.summary && <small>{agent.summary}</small>}</article>)}</div></section>

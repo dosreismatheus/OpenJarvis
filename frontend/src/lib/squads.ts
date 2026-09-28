@@ -3,12 +3,14 @@ import { apiFetch } from './api';
 export type SquadAgent = { id: string; name: string; role: string; status: 'idle' | 'working' | 'blocked' | 'review'; task: string; summary: string; updated_at: string | null };
 export type SquadCard = { id: string; title: string; description: string; column: string; assignee: string; links: string[]; updated_at: string; history?: { from: string | null; to: string; by: string; at: string; evidence: string }[] };
 export type SquadBrainNote = { path: string; title: string; content: string; links: string[] };
+export type SquadCodexLogin = { status: 'authenticated' | 'pending' | 'needs_restart' | 'not_started' | 'not_applicable'; instructions?: string };
 export type SquadSnapshot = {
   schema_version: number;
   id: string;
   name: string;
   description: string;
   repository: string;
+  repository_setup?: 'ready' | 'awaiting_choice';
   environments: { staging: string; production: string };
   agents: SquadAgent[];
   board: { columns: { id: string; name: string }[]; cards: SquadCard[] };
@@ -25,6 +27,14 @@ async function responseJson(response: Response) {
 
 export async function listSquads(): Promise<SquadConnection[]> {
   return responseJson(await apiFetch('/v1/seven/squads'));
+}
+
+export async function getSquadCodexLogin(id: string): Promise<SquadCodexLogin> {
+  return responseJson(await apiFetch(`/v1/seven/squads/${encodeURIComponent(id)}/codex/login`));
+}
+
+export async function startSquadCodexLogin(id: string): Promise<SquadCodexLogin> {
+  return responseJson(await apiFetch(`/v1/seven/squads/${encodeURIComponent(id)}/codex/login`, { method: 'POST' }));
 }
 
 export async function addSquad(input: { id: string; name: string; url: string; token_env?: string; command_token_env?: string }): Promise<void> {
