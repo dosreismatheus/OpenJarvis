@@ -44,6 +44,26 @@ class SevenMCPTests(unittest.TestCase):
                 seven_mcp.squad_delegate("seven", "Título", "Detalhes")
             call.assert_not_called()
 
+    def test_repository_create_requires_suhmah_login(self):
+        with patch.object(seven_mcp, "squad_status", return_value={"online": True, "repository": ""}), patch.object(seven_mcp, "gh", return_value="outra-conta") as gh:
+            with self.assertRaisesRegex(RuntimeError, "suhmah"):
+                seven_mcp.squad_repository_create("gabi")
+            gh.assert_called_once_with("api", "user", "--jq", ".login", timeout=20)
+
+    def test_repository_create_private_org_and_attach(self):
+        calls = []
+
+        def fake_gh(*args, **kwargs):
+            calls.append(args)
+            return "suhmah" if args[:2] == ("api", "user") else ""
+
+        with patch.object(seven_mcp, "squad_status", return_value={"online": True, "repository": ""}), patch.object(seven_mcp, "squad_git_public_key", return_value={"public_key": "ssh-ed25519 AAA test"}), patch.object(seven_mcp, "gh", side_effect=fake_gh), patch.object(seven_mcp, "squad_repository_attach", return_value={"attached": True}):
+            result = seven_mcp.squad_repository_create("gabi", "projeto-gabi")
+        self.assertEqual(result["repository"], "https://github.com/7build/projeto-gabi")
+        self.assertTrue(result["attached"])
+        self.assertIn(("repo", "create", "7build/projeto-gabi", "--private"), calls)
+        self.assertTrue(any(args[:3] == ("repo", "deploy-key", "add") for args in calls))
+
 
 if __name__ == "__main__":
     unittest.main()

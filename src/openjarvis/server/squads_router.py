@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from typing import Literal
 
 
 router = APIRouter(prefix="/v1/seven/squads", tags=["seven-squads"])
@@ -46,6 +47,11 @@ class SquadResume(BaseModel):
 class SquadBrainEdit(BaseModel):
     path: str = Field(min_length=5, max_length=100)
     content: str = Field(min_length=1, max_length=20000)
+
+
+class SquadRepositoryAttach(BaseModel):
+    repository: str = Field(min_length=20, max_length=200, pattern=r"^https://github\.com/[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*$")
+    mode: Literal["existing", "new"]
 
 
 def _valid_registration(value: SquadRegistration) -> SquadRegistration:
@@ -118,6 +124,49 @@ async def get_squad(squad_id: str) -> dict:
     if not item:
         raise HTTPException(404, "Squad não encontrada")
     return await _snapshot(item)
+
+
+@router.get("/{squad_id}/git/public-key")
+async def get_squad_git_public_key(squad_id: str) -> dict:
+    item = next((entry for entry in _read() if entry["id"] == squad_id), None)
+    if not item:
+        raise HTTPException(404, "Squad não encontrada")
+    env_name = item.get("token_env", "")
+    token = os.environ.get(env_name, "") if env_name else ""
+    if env_name and not token:
+        raise HTTPException(503, "Token de leitura da squad não configurado")
+    try:
+        async with httpx.AsyncClient(timeout=8, follow_redirects=False, trust_env=False) as client:
+            response = await client.get(f"{item['url'].rstrip('/')}/v1/git/public-key", headers={"Authorization": f"Bearer {token}"} if token else {})
+            response.raise_for_status()
+            return response.json()
+    except (httpx.HTTPError, ValueError) as exc:
+        raise HTTPException(502, "Não foi possível obter a chave pública Git da squad") from exc
+
+
+@router.post("/{squad_id}/git/repository")
+async def attach_squad_repository(squad_id: str, incoming: SquadRepositoryAttach) -> dict:
+    item = next((entry for entry in _read() if entry["id"] == squad_id), None)
+    if not item:
+        raise HTTPException(404, "Squad não encontrada")
+    env_name = item.get("command_token_env", "")
+    token = os.environ.get(env_name, "") if env_name else ""
+    if not token:
+        raise HTTPException(503, "Token de demandas da squad não configurado")
+    try:
+        async with httpx.AsyncClient(timeout=120, follow_redirects=False, trust_env=False) as client:
+            response = await client.post(
+                f"{item['url'].rstrip('/')}/v1/git/repository",
+                headers={"Authorization": f"Bearer {token}"}, json=incoming.model_dump(),
+            )
+            if response.status_code in (409, 422):
+                raise HTTPException(response.status_code, response.json().get("error", "A squad recusou o repositório"))
+            response.raise_for_status()
+            return response.json()
+    except HTTPException:
+        raise
+    except (httpx.HTTPError, ValueError) as exc:
+        raise HTTPException(502, "Não foi possível vincular o repositório à squad") from exc
 
 
 @router.get("/{squad_id}/brain")

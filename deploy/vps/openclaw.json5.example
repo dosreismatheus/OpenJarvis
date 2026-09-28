@@ -63,6 +63,7 @@
         cwd: "/var/lib/seven-openjarvis",
         enabled: true,
         connectionTimeoutMs: 30000,
+        requestTimeoutMs: 120000,
       },
     },
   },
