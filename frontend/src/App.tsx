@@ -194,7 +194,7 @@ export default function App() {
         <Route path="squads" element={<SquadsPage />} />
         <Route path="squads/:squadId" element={<SquadsPage />} />
         <Route path="squads/:squadId/brain" element={<SquadBrainMapPage />} />
-        <Route path="seven/settings" element={<div className="min-h-screen p-6" style={{ background: 'var(--color-bg)' }}><div className="max-w-2xl mx-auto space-y-6"><SevenSettings /><SevenAgentSettings /></div></div>} />
+        <Route path="seven/settings" element={<div className="h-full min-h-0 overflow-y-auto p-6" style={{ background: 'var(--color-bg)' }}><div className="max-w-2xl mx-auto space-y-6"><SevenSettings /><SevenAgentSettings /></div></div>} />
         <Route element={<Layout />}>
           <Route path="chat" element={<ChatPage />} />
           <Route path="dashboard" element={<DashboardPage />} />

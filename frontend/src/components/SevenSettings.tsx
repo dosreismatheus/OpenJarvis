@@ -12,11 +12,8 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
   const rotationPeriodSeconds = 300 + notes.length * .54;
   const rotationRadiansPerMs = (Math.PI * 2) / (rotationPeriodSeconds * 1000);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const activeIdRef = useRef<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const hoveredIdRef = useRef<string | null>(null);
-  const [pointerInsideGraph, setPointerInsideGraph] = useState(false);
-  const pointerInsideGraphRef = useRef(false);
   const autoFitApplied = useRef(false);
   const [zoom, setZoom] = useState(1.15);
   const [entryProgress, setEntryProgress] = useState(0);
@@ -40,12 +37,12 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
         setEntryProgress(1);
         lastEntryUpdate = 0;
       }
-      if (previous && shouldAutoRotate && !drag.current && !activeIdRef.current && !hoveredIdRef.current && !pointerInsideGraphRef.current) {
+      if (previous && shouldAutoRotate && !drag.current && !hoveredIdRef.current) {
         motionTime.current += time - previous;
         if (motionTime.current >= 32) {
           const elapsed = motionTime.current;
           motionTime.current = 0;
-          setRotation((current) => hoveredIdRef.current || activeIdRef.current || drag.current || pointerInsideGraphRef.current
+          setRotation((current) => hoveredIdRef.current || drag.current
             ? current
             : { ...current, yaw: current.yaw + elapsed * rotationRadiansPerMs });
         }
@@ -135,7 +132,10 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
   const entryScale = .72 + .28 * entryProgress;
   const transform = `translate(${pan.x} ${pan.y}) translate(600 400) scale(${zoom * entryScale}) translate(-600 -400)`;
   const changeZoom = (amount: number) => setZoom((value) => Math.min(12, Math.max(.28, value + amount)));
-  const selectNote = (id: string | null) => { activeIdRef.current = id; setActiveId(id); };
+  const selectNote = (id: string | null) => {
+    setActiveId(id);
+    if (id) { hoveredIdRef.current = null; setHoveredId(null); }
+  };
   const resetView = () => { setZoom(fitView.zoom); setPan(fitView.pan); setRotation(initialRotation); selectNote(null); };
   const zoomAtCursor = (event: React.WheelEvent<SVGSVGElement>) => {
     event.preventDefault();
@@ -177,16 +177,16 @@ function NoteGraph({ notes, onSelect }: { notes: SevenNote[]; onSelect: (note: S
       <div><button type="button" onClick={() => changeZoom(-.2)} aria-label="Diminuir zoom" title="Diminuir zoom"><Minus size={16} /></button><button type="button" onClick={resetView} aria-label="Redefinir mapa" title="Redefinir mapa"><RotateCcw size={15} /></button><span className="seven-graph-zoom-level" aria-live="polite">{Math.round(zoom * 100)}%</span><button type="button" onClick={() => changeZoom(.2)} aria-label="Aumentar zoom" title="Aumentar zoom"><Plus size={16} /></button></div>
     </div>
     <div className="seven-graph-wrap">
-      <svg viewBox="0 0 1200 800" role="group" aria-label="Mapa 3D conectado das notas pessoais" className="seven-graph" onWheel={zoomAtCursor} onPointerEnter={() => { pointerInsideGraphRef.current = true; setPointerInsideGraph(true); }} onPointerLeave={() => { pointerInsideGraphRef.current = false; setPointerInsideGraph(false); }} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => { drag.current = null; }}>
+      <svg viewBox="0 0 1200 800" role="group" aria-label="Mapa 3D conectado das notas pessoais" className="seven-graph" onWheel={zoomAtCursor} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => { drag.current = null; }}>
         <g transform={transform} opacity={entryProgress}>
-        <g className={`seven-graph-focus-layer ${shouldAutoRotate ? '' : 'seven-graph-autospin'} ${activeId || hoveredId || pointerInsideGraph ? 'is-paused' : ''}`} style={{ '--seven-graph-spin-duration': `${rotationPeriodSeconds}s` } as React.CSSProperties}>
+        <g className={`seven-graph-focus-layer ${shouldAutoRotate ? '' : 'seven-graph-autospin'} ${hoveredId ? 'is-paused' : ''}`} style={{ '--seven-graph-spin-duration': `${rotationPeriodSeconds}s` } as React.CSSProperties}>
           {links.map(({ source, target }) => <path key={`${source.note.id}-${target.note.id}`} d={`M ${source.x} ${source.y} L ${target.x} ${target.y}`} className={`seven-graph-line ${notes.length > 500 ? 'seven-graph-line-dense' : ''} ${source.note.id === focused?.id || target.note.id === focused?.id ? 'seven-graph-line-active' : ''}`} />)}
           {positions.map(({ note, x, y, depth, perspective }) => {
           const color = SEVEN_AREAS[note.area]?.color || '#9ca3af';
           const selected = note.id === activeId;
           const showTitle = note.id === hoveredId || selected;
           const relatedNode = focused && !selected && connected.has(note.id);
-          return <g key={note.id} role="button" tabIndex={0} aria-label={`Explorar nota ${note.title}`} aria-pressed={note.id === activeId} onMouseEnter={() => { pointerInsideGraphRef.current = true; setPointerInsideGraph(true); hoveredIdRef.current = note.id; setHoveredId(note.id); }} onMouseLeave={() => { hoveredIdRef.current = null; setHoveredId(null); }} onFocus={() => { hoveredIdRef.current = note.id; setHoveredId(note.id); }} onBlur={() => { hoveredIdRef.current = null; setHoveredId(null); }} onClick={() => selectNote(note.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); selectNote(note.id); } }} className={`seven-graph-node ${selected ? 'seven-graph-node-active' : ''} ${relatedNode ? 'seven-graph-node-connected' : ''} ${focused && !selected && !relatedNode ? 'seven-graph-node-muted' : ''}`}>
+          return <g key={note.id} role="button" tabIndex={0} aria-label={`Explorar nota ${note.title}`} aria-pressed={note.id === activeId} onMouseEnter={() => { hoveredIdRef.current = note.id; setHoveredId(note.id); }} onMouseLeave={() => { hoveredIdRef.current = null; setHoveredId(null); }} onFocus={() => { hoveredIdRef.current = note.id; setHoveredId(note.id); }} onBlur={() => { hoveredIdRef.current = null; setHoveredId(null); }} onClick={() => selectNote(note.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); selectNote(note.id); } }} className={`seven-graph-node ${selected ? 'seven-graph-node-active' : ''} ${relatedNode ? 'seven-graph-node-connected' : ''} ${focused && !selected && !relatedNode ? 'seven-graph-node-muted' : ''}`}>
             <circle cx={x} cy={y} r="17" fill="transparent" />
             <circle cx={x} cy={y} r={Math.min(10, (3 + Math.sqrt(note.links.length) * .82) * perspective)} fill={color} className="seven-brain-data-dot" style={{ opacity: Math.max(.34, Math.min(.94, .62 + depth / 1100)) }} />
             {showTitle && <text x={x} y={y - 22} textAnchor="middle" className="seven-graph-title">{note.title}</text>}
