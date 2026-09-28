@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { ArrowLeft, ArrowUpRight, BookOpen, Boxes, ChevronRight, Circle, GitBranch, Plus, RefreshCw, Server, ShieldCheck, Trash2, Users, X } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, BookOpen, Boxes, ChevronRight, GitBranch, Plus, RefreshCw, Server, ShieldCheck, Trash2, Users, X } from 'lucide-react';
 import { addSquad, getSquadBrain, listSquads, removeSquad, resumeSquadRequest, reviewSquadRequest, saveSquadBrainNote, sendSquadRequest, type SquadBrainNote, type SquadConnection, type SquadAgent, type SquadCard } from '../lib/squads';
 import { SquadBrainMap } from '../components/SquadBrainMap';
 import './SquadsPage.css';
+
+const SevenCampus = lazy(() => import('../components/SevenCampus').then((module) => ({ default: module.SevenCampus })));
 
 const agentStatus: Record<SquadAgent['status'], string> = { idle: 'Disponível', working: 'Trabalhando', blocked: 'Bloqueado', review: 'Em revisão' };
 
@@ -152,10 +154,10 @@ export function SquadsPage() {
   const visibleNotes = brainNotes.filter((note) => `${note.title} ${note.path} ${note.content}`.toLowerCase().includes(brainQuery.toLowerCase()));
   const activeNote = brainNotes.find((note) => note.path === selectedNote) || visibleNotes[0];
 
-  return <div className="squads-page">
-    <header className="squads-topbar"><Link to="/" className="squads-brand"><img src="/seven/7build-mark.svg" alt="" /> SEVEN <span>/ SQUADS</span></Link><div><Link to="/brain" className="squads-text-link">Segundo cérebro</Link><button type="button" onClick={() => void refresh()} aria-label="Atualizar"><RefreshCw size={17} /></button></div></header>
-    <main className="squads-content">
-      <div className="squads-heading"><div>{squadId && <Link to="/squads" className="squads-back"><ArrowLeft size={15} /> Todas as squads</Link>}<div className="squads-kicker"><Boxes size={15} /> OPERAÇÃO</div><h1>{snapshot?.name || selected?.name || 'Squads'}</h1><p>{snapshot?.description || (squadId ? 'Acompanhamento em tempo real da equipe.' : 'Acompanhe cada equipe, seu trabalho e seus ambientes em um só lugar.')}</p></div><div className="squads-heading-actions"><button type="button" onClick={() => setShowForm(true)} className="squads-primary"><Plus size={16} /> Conectar squad</button></div></div>
+  return <div className={'squads-page' + (squadId ? '' : ' squads-page-campus')}>
+    <header className="squads-topbar"><Link to="/" className="squads-brand"><img src="/seven/7build-mark.svg" alt="" /> SEVEN <span>{squadId ? '/ SQUADS' : '/ CAMPUS'}</span></Link><div><Link to="/brain" className="squads-text-link">Segundo cérebro</Link><button type="button" onClick={() => void refresh()} aria-label="Atualizar"><RefreshCw size={17} /></button></div></header>
+    <main className={`squads-content ${squadId ? '' : 'squads-content-campus'}`}>
+      {squadId && <div className="squads-heading"><div><Link to="/squads" className="squads-back"><ArrowLeft size={15} /> Voltar ao campus</Link><div className="squads-kicker"><Boxes size={15} /> OPERAÇÃO</div><h1>{snapshot?.name || selected?.name || 'Squad'}</h1><p>{snapshot?.description || 'Acompanhamento em tempo real da equipe.'}</p></div><div className="squads-heading-actions"><button type="button" onClick={() => setShowForm(true)} className="squads-primary"><Plus size={16} /> Conectar squad</button></div></div>}
       {error && <div className="squads-error" role="alert">{error}<button type="button" onClick={() => setError('')} aria-label="Fechar"><X size={15} /></button></div>}
       {loading ? <div className="squads-empty">Carregando squads...</div> : squadId ? (
         !selected ? <div className="squads-empty">Squad não encontrada. <Link to="/squads">Ver todas</Link></div> : <>
@@ -192,7 +194,7 @@ export function SquadsPage() {
             </section>
           </>}
         </>
-      ) : items.length === 0 ? <div className="squads-empty"><Boxes size={28} /><strong>Nenhuma squad conectada ainda.</strong><span>Crie um repositório a partir do template e conecte o servidor da squad aqui.</span><a href="https://github.com/suhmah/seven-squad-template" target="_blank" rel="noreferrer">Abrir template no GitHub ↗</a><button type="button" className="squads-primary" onClick={() => setShowForm(true)}>Conectar primeira squad <ChevronRight size={15} /></button></div> : <div className="squads-grid">{items.map((item) => <Link to={`/squads/${item.id}`} className="squads-tile" key={item.id}><div className="squads-tile-top"><div className="squads-tile-icon"><Boxes size={22} /></div><span className={`squads-connection ${item.online ? 'is-online' : ''}`}><i />{item.online ? 'Conectada' : 'Indisponível'}</span></div><h2>{item.data?.name || item.name}</h2><p>{item.data?.description || item.error || 'Acompanhe a equipe e o board.'}</p><div className="squads-tile-foot"><span><Users size={15} /> {item.data?.agents.length ?? 0} agentes</span><span><Circle size={13} /> {item.data?.board.cards.length ?? 0} cartões</span><ChevronRight size={17} /></div></Link>)}</div>}
+      ) : <Suspense fallback={<div className="squads-empty">Abrindo campus 3D...</div>}><SevenCampus squads={items} onConnect={() => setShowForm(true)} /></Suspense>}
     </main>
     {openCard && snapshot && <CardDetailsDialog card={openCard} columns={snapshot.board.columns} agents={snapshot.agents} notes={brainNotes} onClose={() => setOpenCardId(null)} />}
     {showForm && <div className="squads-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowForm(false); }}><form className="squads-modal" onSubmit={(event) => void create(event)}><div className="squads-modal-head"><div><span className="squads-kicker">NOVA CONEXÃO</span><h2>Conectar squad</h2></div><button type="button" onClick={() => setShowForm(false)} aria-label="Fechar"><X size={18} /></button></div><p>O Seven consulta o servidor da squad e mostra o trabalho registrado por ela.</p><label>ID da squad<input required pattern="[a-z0-9][a-z0-9-]{1,62}" value={form.id} onChange={(event) => setForm({ ...form, id: event.target.value })} placeholder="minha-squad" /></label><label>Nome<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Squad do produto" /></label><label>URL do servidor<input required type="url" value={form.url} onChange={(event) => setForm({ ...form, url: event.target.value })} placeholder="http://127.0.0.1:8761" /></label><label>Variável do token de leitura <small>opcional</small><input value={form.token_env} onChange={(event) => setForm({ ...form, token_env: event.target.value })} placeholder="SQUAD_MINHA_SQUAD_READ_TOKEN" /></label><label>Variável do token de demandas <small>opcional</small><input value={form.command_token_env} onChange={(event) => setForm({ ...form, command_token_env: event.target.value })} placeholder="SQUAD_MINHA_SQUAD_COMMAND_TOKEN" /></label><button type="submit" className="squads-primary" disabled={saving}>{saving ? 'Conectando...' : 'Conectar squad'}</button></form></div>}
