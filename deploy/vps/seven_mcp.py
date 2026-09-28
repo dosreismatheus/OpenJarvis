@@ -112,7 +112,7 @@ def gh(*arguments: str, timeout: int = 60) -> str:
 
 @server.tool()
 def squad_repository_create(squad_id: str, repo_name: str = "") -> dict:
-    """Somente após Matheus responder que NÃO existe repositório: crie repo PRIVADO em github.com/7build, pela conta suhmah, autorize a chave pública da squad e vincule o projeto. Nunca crie em suhmah pessoal."""
+    """Somente após Matheus responder que NÃO existe repositório: crie repo PRIVADO em github.com/7build-tech, pela conta suhmah, autorize a chave pública da squad e vincule o projeto. Nunca crie em suhmah pessoal."""
     if not SQUAD_ID.fullmatch(squad_id):
         raise ValueError("ID de squad inválido")
     status = squad_status(squad_id)
@@ -125,7 +125,7 @@ def squad_repository_create(squad_id: str, repo_name: str = "") -> dict:
     if login.casefold() != "suhmah":
         raise RuntimeError("GitHub CLI da VPS central precisa estar autenticada como suhmah; nenhum repositório foi criado")
     public_key = squad_git_public_key(squad_id)["public_key"]
-    target = f"7build/{name}"
+    target = f"7build-tech/{name}"
     repository = f"https://github.com/{target}"
     gh("repo", "create", target, "--private", timeout=60)
     with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", prefix="seven-squad-key-", suffix=".pub") as key_file:

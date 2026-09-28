@@ -59,9 +59,9 @@ class SevenMCPTests(unittest.TestCase):
 
         with patch.object(seven_mcp, "squad_status", return_value={"online": True, "repository": ""}), patch.object(seven_mcp, "squad_git_public_key", return_value={"public_key": "ssh-ed25519 AAA test"}), patch.object(seven_mcp, "gh", side_effect=fake_gh), patch.object(seven_mcp, "squad_repository_attach", return_value={"attached": True}):
             result = seven_mcp.squad_repository_create("gabi", "projeto-gabi")
-        self.assertEqual(result["repository"], "https://github.com/7build/projeto-gabi")
+        self.assertEqual(result["repository"], "https://github.com/7build-tech/projeto-gabi")
         self.assertTrue(result["attached"])
-        self.assertIn(("repo", "create", "7build/projeto-gabi", "--private"), calls)
+        self.assertIn(("repo", "create", "7build-tech/projeto-gabi", "--private"), calls)
         self.assertTrue(any(args[:3] == ("repo", "deploy-key", "add") for args in calls))
 
 
