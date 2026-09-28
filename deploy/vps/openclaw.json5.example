@@ -10,7 +10,9 @@
     http: { endpoints: { chatCompletions: { enabled: true } } },
   },
   agents: {
+    ownership: "explicit",
     defaults: {
+      systemAgent: { agentId: "main" },
       workspace: "/var/lib/seven-openjarvis/.openclaw/workspace",
       model: {
         primary: "openai/gpt-6-sol",
@@ -18,11 +20,11 @@
       },
       models: {
         "openai/*": { agentRuntime: { id: "openclaw" } },
-        "ollama/*": { agentRuntime: { id: "openclaw" } },
+      "ollama/*": { agentRuntime: { id: "openclaw" } },
       },
     },
     entries: {
-      main: { default: true, workspace: "/var/lib/seven-openjarvis/.openclaw/workspace" },
+      main: { workspace: "/var/lib/seven-openjarvis/.openclaw/workspace" },
       "local-chat": {
         name: "Seven local rápido",
         workspace: "/var/lib/seven-openjarvis/.openclaw/workspace-local-chat",
@@ -51,6 +53,17 @@
   memory: {
     search: {
       extraPaths: ["/var/lib/seven-openjarvis/Documents/Seven Brain"],
+    },
+  },
+  mcp: {
+    servers: {
+      "seven-operations": {
+        command: "/var/lib/seven-openjarvis/.openclaw/mcp-venv/bin/python",
+        args: ["/var/lib/seven-openjarvis/.openclaw/seven_mcp.py"],
+        cwd: "/var/lib/seven-openjarvis",
+        enabled: true,
+        connectionTimeoutMs: 30000,
+      },
     },
   },
 }

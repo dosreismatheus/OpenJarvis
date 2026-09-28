@@ -309,7 +309,7 @@ async def seven_save_agent_models(payload: SevenAgentModelsRequest, request: Req
 
 @router.post("/chat")
 async def seven_chat(request: SevenChatRequest) -> StreamingResponse:
-    """Capture every turn, then use the selected local or OpenClaw transport."""
+    """Capture every turn, then send every chat model through OpenClaw."""
     model = request.model.strip() if request.model else ""
     catalog = await _model_catalog() if model else []
     selected = next((item for item in catalog if item["key"] == model), None) if model else None
@@ -319,10 +319,6 @@ async def seven_chat(request: SevenChatRequest) -> StreamingResponse:
         await asyncio.to_thread(_capture_chat_message, request)
     except OSError as exc:
         raise HTTPException(status_code=503, detail="Não foi possível registrar a mensagem para o Segundo Cérebro") from exc
-    if selected and selected["local"]:
-        if selected["provider"] != "ollama":
-            raise HTTPException(status_code=422, detail="Provedor local não suportado pelo chat rápido")
-        return await _local_chat(request, model.split("/", 1)[1])
     headers = {"Authorization": f"Bearer {_gateway_token()}", "Content-Type": "application/json"}
     if model:
         headers["x-openclaw-model"] = model
@@ -355,67 +351,6 @@ async def seven_chat(request: SevenChatRequest) -> StreamingResponse:
         try:
             async for chunk in upstream.aiter_bytes():
                 yield chunk
-        finally:
-            await upstream.aclose()
-            await client.aclose()
-
-    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-
-
-async def _local_chat(request: SevenChatRequest, model: str) -> StreamingResponse:
-    """Stream Ollama directly to avoid a full agent prompt on a small CPU VPS."""
-    prompt_file = Path(os.environ.get(
-        "SEVEN_LOCAL_CHAT_PROMPT_FILE",
-        "/var/lib/seven-openjarvis/.openclaw/workspace-local-chat/AGENTS.md",
-    ))
-    try:
-        system_prompt = prompt_file.read_text(encoding="utf-8")
-    except OSError as exc:
-        raise HTTPException(status_code=503, detail="Instruções do Seven local indisponíveis") from exc
-    messages = [{"role": "system", "content": system_prompt}]
-    messages.extend({"role": turn.role, "content": turn.text} for turn in request.history[-8:])
-    messages.append({"role": "user", "content": request.text})
-    ollama = os.environ.get("SEVEN_OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/")
-    client = httpx.AsyncClient(timeout=httpx.Timeout(10.0, read=None))
-    try:
-        upstream = await client.send(client.build_request(
-            "POST", f"{ollama}/api/chat",
-            json={
-                "model": model, "messages": messages, "stream": True, "think": False,
-                "keep_alive": "1h",
-                "options": {"num_ctx": 4096, "num_predict": 192, "temperature": 0.4},
-            },
-        ), stream=True)
-        if upstream.status_code != 200:
-            await upstream.aclose()
-            raise HTTPException(status_code=502, detail=f"Ollama recusou o modelo local ({upstream.status_code})")
-    except httpx.HTTPError as exc:
-        await client.aclose()
-        raise HTTPException(status_code=503, detail="Modelo local indisponível na VPS") from exc
-    except HTTPException:
-        await client.aclose()
-        raise
-
-    async def events():
-        try:
-            async for line in upstream.aiter_lines():
-                if not line:
-                    continue
-                try:
-                    chunk = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                if chunk.get("error"):
-                    message = json.dumps({"error": {"message": str(chunk["error"])}}, ensure_ascii=False)
-                    yield f"data: {message}\n\n"
-                    break
-                content = (chunk.get("message") or {}).get("content")
-                if isinstance(content, str) and content:
-                    event = {"choices": [{"delta": {"content": content}}]}
-                    yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
-                if chunk.get("done"):
-                    break
-            yield "data: [DONE]\n\n"
         finally:
             await upstream.aclose()
             await client.aclose()

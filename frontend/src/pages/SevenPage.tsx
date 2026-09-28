@@ -13,19 +13,19 @@ type ChatItem = { id: string; role: 'user' | 'assistant'; text: string };
 const CHAT_KEY = 'seven-chat-v2';
 const SESSION_KEY = 'seven-session-v2';
 const MODEL_KEY = 'seven-openclaw-model';
-const FAST_LOCAL_MODEL = 'ollama/qwen3.5:0.8b';
 const OPENCLAW_DEFAULT_CHOICE = '__openclaw_default__';
-const LOCAL_DEFAULT_MIGRATION_KEY = 'seven-local-fast-default-v1';
+const REMOTE_DEFAULT_MIGRATION_KEY = 'seven-openclaw-remote-default-v1';
 
 function loadSelectedModel(): string {
-  if (localStorage.getItem(LOCAL_DEFAULT_MIGRATION_KEY) !== '1') {
-    localStorage.setItem(LOCAL_DEFAULT_MIGRATION_KEY, '1');
-    localStorage.setItem(MODEL_KEY, FAST_LOCAL_MODEL);
-    return FAST_LOCAL_MODEL;
+  if (localStorage.getItem(REMOTE_DEFAULT_MIGRATION_KEY) !== '1') {
+    localStorage.setItem(REMOTE_DEFAULT_MIGRATION_KEY, '1');
+    if (!localStorage.getItem(MODEL_KEY) || localStorage.getItem(MODEL_KEY)?.startsWith('ollama/')) {
+      localStorage.setItem(MODEL_KEY, OPENCLAW_DEFAULT_CHOICE);
+    }
   }
   const saved = localStorage.getItem(MODEL_KEY);
   if (saved === OPENCLAW_DEFAULT_CHOICE) return '';
-  return saved || FAST_LOCAL_MODEL;
+  return saved || '';
 }
 
 function loadSession(): string {
@@ -80,8 +80,8 @@ export function SevenPage() {
     getSevenModels().then((catalog) => {
       setModels(catalog);
       setSelectedModel((current) => {
-        if (current && !catalog.some((model) => model.key === current)) {
-          const fallback = catalog.some((model) => model.key === FAST_LOCAL_MODEL) ? FAST_LOCAL_MODEL : '';
+        if (current && !catalog.some((model) => model.key === current && !model.local)) {
+          const fallback = '';
           localStorage.setItem(MODEL_KEY, fallback || OPENCLAW_DEFAULT_CHOICE);
           return fallback;
         }
@@ -353,7 +353,6 @@ export function SevenPage() {
     chatAbort.current?.abort(); stopVoice();
     if (status === 'thinking') setStatus('ready');
   };
-  const localModels = models.filter((model) => model.local);
   const remoteProviders = [...new Set(models.filter((model) => !model.local).map((model) => model.provider))];
 
   return <div className="seven-shell">
@@ -362,7 +361,7 @@ export function SevenPage() {
       <Link to="/" className="seven-wordmark"><img src="/seven/7build-mark.svg" alt="" /><span>SEVEN</span><small>ASSISTENTE PESSOAL</small></Link>
       <div className="seven-header-right">
         <div className="seven-clock" aria-label="Horário local"><strong>{now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</strong><span>{now.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}</span></div>
-        <label className="seven-model" title="Modelos configurados no OpenClaw"><Cpu size={15} /><select aria-label="Modelo do OpenClaw" value={selectedModel} onChange={(event) => { const model = event.target.value; setSelectedModel(model); localStorage.setItem(MODEL_KEY, model || OPENCLAW_DEFAULT_CHOICE); }}><option value="">Padrão do OpenClaw (remoto)</option>{localModels.length > 0 && <optgroup label="LOCAIS · VPS">{localModels.map((model) => <option key={model.key} value={model.key}>{model.name}</option>)}</optgroup>}{remoteProviders.map((provider) => <optgroup key={provider} label={`REMOTOS · ${provider === 'openai' ? 'OpenAI (API)' : provider.toUpperCase()}`}>{models.filter((model) => !model.local && model.provider === provider).map((model) => <option key={model.key} value={model.key}>{model.name}</option>)}</optgroup>)}</select></label>
+        <label className="seven-model" title="Modelos configurados no OpenClaw"><Cpu size={15} /><select aria-label="Modelo do OpenClaw" value={selectedModel} onChange={(event) => { const model = event.target.value; setSelectedModel(model); localStorage.setItem(MODEL_KEY, model || OPENCLAW_DEFAULT_CHOICE); }}><option value="">Padrão do OpenClaw (remoto)</option>{remoteProviders.map((provider) => <optgroup key={provider} label={`REMOTOS · ${provider === 'openai' ? 'OpenAI (API)' : provider.toUpperCase()}`}>{models.filter((model) => !model.local && model.provider === provider).map((model) => <option key={model.key} value={model.key}>{model.name}</option>)}</optgroup>)}</select></label>
         <Link to="/squads" className="seven-icon-link seven-squads-link" title="Squads"><Boxes size={18} /><span>Squads</span></Link>
         <Link to="/brain" className="seven-icon-link" title="Segundo cérebro" aria-label="Segundo cérebro"><BrainCircuit size={19} /></Link>
         <Link to="/seven/settings" className="seven-icon-link" title="Voz e painel"><Settings2 size={19} /></Link>
