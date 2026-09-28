@@ -44,6 +44,17 @@ class SevenMCPTests(unittest.TestCase):
                 seven_mcp.squad_delegate("seven", "Título", "Detalhes")
             call.assert_not_called()
 
+    def test_codex_login_start_uses_squad_endpoint(self):
+        with patch.object(seven_mcp, "squad_status", return_value={"online": True}), patch.object(seven_mcp, "api", return_value={"status": "pending", "instructions": "ABCD-EFGH"}) as call:
+            result = seven_mcp.squad_codex_login_start("gabi")
+            self.assertEqual(result["status"], "pending")
+            call.assert_called_once_with("/v1/seven/squads/gabi/codex/login", {}, timeout=25)
+
+    def test_codex_login_status_reads_squad_endpoint(self):
+        with patch.object(seven_mcp, "api", return_value={"status": "authenticated"}) as call:
+            self.assertEqual(seven_mcp.squad_codex_login_status("gabi")["status"], "authenticated")
+            call.assert_called_once_with("/v1/seven/squads/gabi/codex/login")
+
     def test_repository_create_requires_suhmah_login(self):
         with patch.object(seven_mcp, "squad_status", return_value={"online": True, "repository": ""}), patch.object(seven_mcp, "gh", return_value="outra-conta") as gh:
             with self.assertRaisesRegex(RuntimeError, "suhmah"):

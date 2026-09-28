@@ -87,6 +87,25 @@ def squad_git_public_key(squad_id: str) -> dict:
 
 
 @server.tool()
+def squad_codex_login_status(squad_id: str) -> dict:
+    """Consulte se a CLI Codex da squad está autenticada e leia as instruções de device code em andamento. Entregue o código somente a Matheus."""
+    if not SQUAD_ID.fullmatch(squad_id):
+        raise ValueError("ID de squad inválido")
+    return api(f"/v1/seven/squads/{squad_id}/codex/login")
+
+
+@server.tool()
+def squad_codex_login_start(squad_id: str) -> dict:
+    """Inicie o login ChatGPT da CLI Codex no usuário Unix da squad. Mostre a Matheus o URL e código de uso único retornados; consulte status até authenticated. Não peça senha nem token."""
+    if not SQUAD_ID.fullmatch(squad_id):
+        raise ValueError("ID de squad inválido")
+    status = squad_status(squad_id)
+    if not status["online"]:
+        raise RuntimeError(f"Squad {squad_id} offline")
+    return api(f"/v1/seven/squads/{squad_id}/codex/login", {}, timeout=25)
+
+
+@server.tool()
 def squad_repository_attach(squad_id: str, repository: str, mode: str = "existing") -> dict:
     """Depois da chave SSH pública ser autorizada no GitHub, vincule a squad ao repositório. existing clona sem sobrescrever o código da empresa; new publica o scaffold num repo vazio."""
     if not SQUAD_ID.fullmatch(squad_id) or mode not in ("existing", "new"):

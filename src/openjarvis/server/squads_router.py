@@ -144,6 +144,33 @@ async def get_squad_git_public_key(squad_id: str) -> dict:
         raise HTTPException(502, "Não foi possível obter a chave pública Git da squad") from exc
 
 
+async def _codex_login(squad_id: str, method: str) -> dict:
+    item = next((entry for entry in _read() if entry["id"] == squad_id), None)
+    if not item:
+        raise HTTPException(404, "Squad não encontrada")
+    env_name = item.get("command_token_env" if method == "POST" else "token_env", "")
+    token = os.environ.get(env_name, "") if env_name else ""
+    if not token:
+        raise HTTPException(503, "Token da squad não configurado")
+    try:
+        async with httpx.AsyncClient(timeout=18, follow_redirects=False, trust_env=False) as client:
+            response = await client.request(method, f"{item['url'].rstrip('/')}/v1/codex/login", headers={"Authorization": f"Bearer {token}"})
+            response.raise_for_status()
+            return response.json()
+    except (httpx.HTTPError, ValueError) as exc:
+        raise HTTPException(502, "Não foi possível consultar o login Codex da squad") from exc
+
+
+@router.get("/{squad_id}/codex/login")
+async def get_squad_codex_login(squad_id: str) -> dict:
+    return await _codex_login(squad_id, "GET")
+
+
+@router.post("/{squad_id}/codex/login")
+async def start_squad_codex_login(squad_id: str) -> dict:
+    return await _codex_login(squad_id, "POST")
+
+
 @router.post("/{squad_id}/git/repository")
 async def attach_squad_repository(squad_id: str, incoming: SquadRepositoryAttach) -> dict:
     item = next((entry for entry in _read() if entry["id"] == squad_id), None)
